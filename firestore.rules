@@ -1,0 +1,313 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Lista de emails de administradores
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email != null && 
+             request.auth.token.email.lower() in [
+        "raiokan3223br@gmail.com",
+        "alef.midrei@gmail.com",
+        "guigaxpxp@gmail.com"
+      ];
+    }
+    
+    // Verifica se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+    
+    // Verifica se é o próprio usuário
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Verifica se o usuário tem plano válido (não grátis)
+    function hasValidPlan() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plano != null &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plano != "gratis";
+    }
+    
+    // Verifica hierarquia de planos - retorna nível numérico do plano
+    function getPlanLevel(plan) {
+      return plan == "gratis" ? 0 :
+             plan == "minuta" ? 1 :
+             plan == "minutos" ? 2 :
+             plan == "relogio" ? 3 :
+             plan == "lorde" ? 4 :
+             plan == "nobreza" ? 5 :
+             plan == "familiareal" ? 6 :
+             plan == "pracadotempo" ? 7 :
+             plan == "atemporal" ? 8 :
+             plan == "cronomante" ? 9 :
+             plan == "administrador" ? 10 :
+             -1; // Plano não encontrado
+    }
+    
+    // Verifica se o usuário pode acessar uma campanha baseado na hierarquia de planos
+    function canAccessCampaign(campaignPlan) {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             (campaignPlan == null || campaignPlan == "gratis" ||
+              getPlanLevel(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plano != null ? 
+                          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plano : "gratis") >= 
+              getPlanLevel(campaignPlan));
+    }
+
+    // USERS: Perfil do usuário
+    match /users/{userId} {
+      // Leitura: próprio usuário ou admin
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Criação: usuário pode criar seu próprio perfil
+      allow create: if isAuthenticated() && 
+                      isOwner(userId) &&
+                      request.auth.token.email != null &&
+                      request.resource.data.keys().hasAll(['uid', 'email']) &&
+                      request.resource.data.email == request.auth.token.email &&
+                      request.resource.data.uid == request.auth.uid;
+      
+      // Criação: ADMINISTRADORES podem criar usuários via importação CSV
+      allow create: if isAdmin() &&
+                      request.resource.data.keys().hasAll(['email']) &&
+                      request.resource.data.email is string &&
+                      request.resource.data.email.matches('.*@.*\\..+') &&
+                      // PROTEÇÃO ANTI-DUPLICAÇÃO: Verificar se email não existe
+                      !exists(/databases/$(database)/documents/users/$(request.resource.data.uid)) &&
+                      // Permitir campos de importação CSV
+                      (request.resource.data.keys().hasOnly([
+                        'uid', 'email', 'displayName', 'phone', 'plano', 
+                        'criadoEm', 'criadoViaImportacao', 'importadoEm', 
+                        'ativo', 'emailVerificado', 'primeiroLogin',
+                        'atualizadoEm', 'atualizadoViaImportacao',
+                        'importadoPor', 'hashImportacao'
+                      ]) || true); // Permitir campos extras para flexibilidade
+      
+      // Atualização: próprio usuário pode atualizar campos básicos
+      allow update: if isOwner(userId) && (
+        // Campos que o usuário pode alterar
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'plano', 'planoAlteradoEm', 'planoAlteradoPor', 'role', 'permissions'
+        ])
+      );
+      
+      // Admin pode atualizar qualquer campo, incluindo planos
+      allow update: if isAdmin();
+      
+      // Admin pode deletar usuários se necessário
+      allow delete: if isAdmin();
+    }
+
+    // CAMPANHAS: Listagem de campanhas - ACESSO PÚBLICO TOTAL
+    match /campanhas/{campaignId} {
+      // Leitura completamente pública para todos (logados ou não)
+      allow read: if true;
+      
+      // Admin pode criar, editar e deletar campanhas
+      allow create, update, delete: if isAdmin();
+      
+      // Usuários autenticados podem se inscrever se atenderem aos requisitos de plano
+      allow update: if isAuthenticated() && 
+                      (resource.data.plano == null || 
+                       resource.data.plano == "gratis" || 
+                       canAccessCampaign(resource.data.plano)) && 
+                      // Verificar se apenas o array jogadores está sendo modificado
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['jogadores']);
+    }
+    
+    // Permitir consultas (queries) na coleção campanhas para todos
+    match /campanhas {
+      allow read: if true;
+    }
+
+    // CONQUISTAS: Sistema de conquistas/troféus
+    match /conquistas/{conquistaId} {
+      // Leitura pública
+      allow read: if true;
+      
+      // Apenas admin pode criar/editar definições de conquistas
+      allow write: if isAdmin();
+    }
+
+    // NOTIFICATIONS: Notificações do sistema
+    match /notifications/{notificationId} {
+      // Usuário pode ler suas próprias notificações
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Admin pode ler todas as notificações
+      allow read: if isAdmin();
+      
+      // Sistema pode criar notificações (via Cloud Functions)
+      allow create: if isAdmin();
+      
+      // Usuário pode marcar suas notificações como lidas
+      allow update: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt']);
+    }
+
+    // MENSAGENS: Sistema de suporte - REGRAS ULTRA PERMISSIVAS
+    match /messages/{messageId} {
+      // Permitir TUDO para usuários autenticados
+      allow read, write, create, update, delete: if isAuthenticated();
+      
+      // Admins podem fazer tudo (redundante mas garantido)
+      allow read, write, create, update, delete: if isAdmin();
+    }
+    
+    // QUERIES NA COLEÇÃO DE MENSAGENS - ULTRA PERMISSIVAS
+    match /messages {
+      // Permitir TUDO para usuários autenticados
+      allow read, write, list, create, update, delete: if isAuthenticated();
+      
+      // Admins podem fazer tudo (redundante mas garantido)
+      allow read, write, list, create, update, delete: if isAdmin();
+    }
+    
+    // MENSAGENS COM WILDCARD - Para capturar qualquer sub-documento
+    match /messages/{document=**} {
+      // Permitir TUDO para usuários autenticados
+      allow read, write, create, update, delete: if isAuthenticated();
+      
+      // Admins podem fazer tudo
+      allow read, write, create, update, delete: if isAdmin();
+    }
+
+    // FEEDBACK: Sistema de feedback e sugestões
+    match /feedback/{feedbackId} {
+      // Usuário autenticado pode criar feedback
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Usuário pode ler seu próprio feedback
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Admin pode ler e responder todos os feedbacks
+      allow read, update: if isAdmin();
+      
+      // Admin pode deletar feedback se necessário
+      allow delete: if isAdmin();
+    }
+
+    // EVENTS: Sistema de eventos automáticos
+    match /events/{eventId} {
+      // Apenas usuários autenticados podem criar eventos sobre si mesmos
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Usuário pode ler seus próprios eventos
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Admin pode ler todos os eventos
+      allow read: if isAdmin();
+      
+      // Eventos não podem ser editados (preservar histórico)
+      allow update, delete: if false;
+    }
+
+    // ANALYTICS: Dados de analytics (apenas admin)
+    match /analytics/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // LOGS: Sistema de logs para auditoria (apenas admin)
+    match /logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // SETTINGS: Configurações globais do sistema
+    match /settings/{settingId} {
+      // Leitura pública para configurações não sensíveis
+      allow read: if true;
+      
+      // Apenas admin pode alterar configurações
+      allow write: if isAdmin();
+    }
+
+    // CÓDIGOS: Códigos de ativação e promocionais
+    match /codes/{codeId} {
+      // Usuário autenticado pode ler códigos públicos
+      allow read: if isAuthenticated();
+      
+      // Apenas admin pode criar/gerenciar códigos
+      allow write: if isAdmin();
+    }
+
+    // ASSINATURAS: Histórico de assinaturas e pagamentos
+    match /subscriptions/{subscriptionId} {
+      // Usuário pode ler suas próprias assinaturas
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Admin pode ler todas as assinaturas
+      allow read: if isAdmin();
+      
+      // Sistema de pagamento pode criar/atualizar (via Cloud Functions ou webhook)
+      allow create, update: if isAdmin();
+      
+      // Assinaturas não podem ser deletadas (preservar histórico)
+      allow delete: if false;
+    }
+
+    // TROFÉUS PERSONALIZADOS: Sistema de troféus/conquistas criados por administradores
+    match /trofeus_personalizados/{trofeuId} {
+      // Leitura pública para todos (para carregar na interface)
+      allow read: if true;
+      
+      // Apenas administradores podem criar troféus personalizados
+      allow create: if isAdmin() &&
+                      // Validar estrutura obrigatória
+                      request.resource.data.keys().hasAll([
+                        'id', 'nome', 'descricao', 'icone', 'categoria', 
+                        'raridade', 'xp', 'condicoes', 'criadoEm', 
+                        'criadoPor', 'criadorNome', 'ativo', 'personalizado'
+                      ]) &&
+                      // Validar tipos de dados
+                      request.resource.data.nome is string &&
+                      request.resource.data.nome.size() > 0 &&
+                      request.resource.data.nome.size() <= 50 &&
+                      request.resource.data.descricao is string &&
+                      request.resource.data.descricao.size() > 0 &&
+                      request.resource.data.descricao.size() <= 150 &&
+                      request.resource.data.icone is string &&
+                      request.resource.data.categoria in ['primeiros_passos', 'campanhas', 'tempo', 'social', 'especial', 'seasonal'] &&
+                      request.resource.data.raridade in ['comum', 'rara', 'epica', 'lendaria'] &&
+                      request.resource.data.xp is int &&
+                      request.resource.data.xp >= 1 &&
+                      request.resource.data.xp <= 1000 &&
+                      request.resource.data.condicoes is map &&
+                      request.resource.data.criadoPor == request.auth.token.email &&
+                      request.resource.data.ativo == true &&
+                      request.resource.data.personalizado == true;
+      
+      // Apenas administradores podem atualizar troféus personalizados
+      allow update: if isAdmin();
+      
+      // Apenas administradores podem deletar troféus personalizados
+      allow delete: if isAdmin();
+    }
+    
+    // Permitir consultas na coleção de troféus personalizados
+    match /trofeus_personalizados {
+      allow read: if true;
+    }
+
+    // TROFÉUS MODIFICADOS: Modificações de troféus padrão pelos administradores
+    match /trofeus_modificados/{modificacaoId} {
+      // Leitura pública para todos (para carregar na interface)
+      allow read: if true;
+      
+      // Apenas administradores podem criar/atualizar/deletar modificações
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Permitir consultas na coleção de troféus modificados
+    match /trofeus_modificados {
+      allow read: if true;
+    }
+  }
+} 

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campanhas - Lorde Tempus</title>
+    
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="Explore as campanhas disponíveis na Lorde Tempus. Mesas exclusivas de RPG conduzidas pelos melhores mestres do Brasil.">
+    <meta name="keywords" content="campanhas RPG, mesas RPG, D&D campanhas, RPG online, aventuras RPG">
+    <meta name="author" content="Lorde Tempus">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Campanhas - Lorde Tempus">
+    <meta property="og:description" content="Explore as campanhas disponíveis na Lorde Tempus">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lordetempus.com/campanhas">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/imagens_aleatorias/Foto_de_perfil_TikTok_1.png">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="fontes/trend-slab-four.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="fontes/Helvetica-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Trend+Slab+Four:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Trend Slab Four';
+            src: url('fontes/trend-slab-four.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Helvetica';
+            src: url('fontes/Helvetica.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Trend Slab Four', serif !important;
+        }
+        body, p, a, li, label, input, textarea, select, button, span, div {
+            font-family: 'Helvetica', Arial, sans-serif !important;
+        }
+        .nav-link {
+            color: var(--text-main);
+            font-weight: 500;
+            background: none;
+            border: none;
+            text-decoration: none;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-link:hover, .nav-link:focus {
+            color: var(--primary);
+            background: rgba(0,191,174,0.08);
+        }
+        .dark .nav-link {
+            color: var(--text-light);
+        }
+        .dark .nav-link:hover, .dark .nav-link:focus {
+            color: var(--primary);
+            background: rgba(0,191,174,0.12);
+        }
+        .nav-link.font-bold, .nav-link.active {
+            font-weight: bold !important;
+            color: var(--surface-light) !important;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            background: var(--primary);
+        }
+        .dark .nav-link.font-bold, .dark .nav-link.active {
+            color: var(--primary) !important;
+            background: var(--surface-dark);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.28);
+        }
+        .lorde-btn {
+            background: var(--primary) !important;
+            color: var(--surface-light) !important;
+            border: none;
+            box-shadow: 0 2px 8px 0 rgba(0,191,174,0.15);
+        }
+        .lorde-btn:hover {
+            background: var(--primary-dark) !important;
+        }
+        .dark .lorde-btn {
+            background: var(--primary) !important;
+            color: var(--surface-dark) !important;
+        }
+
+        /* Estilos para modal de detalhes da campanha */
+        .modal-xlarge {
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        .modal-xlarge .modal-body {
+            padding: 0;
+        }
+
+        .detalhes-campanha {
+            display: grid;
+            gap: 0;
+        }
+
+        .detalhes-campanha-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .detalhes-campanha-header.sem-imagem {
+            background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-dark) 100%);
+            color: var(--text-main);
+        }
+
+        .dark .detalhes-campanha-header.sem-imagem {
+            background: linear-gradient(135deg, var(--surface-dark) 0%, #1a202c 100%);
+            color: var(--text-light);
+        }
+
+        .detalhes-campanha-header.com-imagem {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detalhes-campanha-header.com-imagem::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,191,174,0.9) 0%, rgba(0,123,141,0.9) 100%);
+            z-index: 1;
+        }
+
+        .detalhes-campanha-header > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .detalhes-campanha-titulo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .detalhes-campanha-sistema {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .detalhes-badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .detalhes-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detalhes-conteudo {
+            padding: 2rem;
+        }
+
+        .detalhes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .detalhes-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .modal-xlarge {
+                max-width: 95vw;
+                margin: 1rem auto;
+            }
+
+            .detalhes-campanha-titulo {
+                font-size: 1.8rem;
+            }
+        }
+
+        .detalhes-secao {
+            background: var(--surface-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .dark .detalhes-secao {
+            background: var(--surface-dark);
+            border-color: var(--border-color-dark);
+        }
+
+        .detalhes-secao-titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detalhes-secao-conteudo {
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .dark .detalhes-secao-conteudo {
+            color: var(--text-light);
+        }
+
+        .detalhes-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(var(--primary-rgb), 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .detalhes-info-item i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .detalhes-info-label {
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .detalhes-info-valor {
+            flex: 1;
+        }
+
+        .detalhes-descricao {
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        .detalhes-lista {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detalhes-lista li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dark .detalhes-lista li {
+            border-bottom-color: var(--border-color-dark);
+        }
+
+        .detalhes-lista li:last-child {
+            border-bottom: none;
+        }
+
+        .detalhes-lista li i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .detalhes-acoes {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        .dark .detalhes-acoes {
+            border-top-color: var(--border-color-dark);
+            background: var(--bg-dark);
+        }
+
+        .detalhes-btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card-campanha-clicavel {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-campanha-clicavel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .dark .card-campanha-clicavel:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full navbar-lorde shadow-lg z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold flex items-center text-primary hover:opacity-80 transition-opacity logo-lorde">
+                    <i class="fas fa-dice-d20 mr-2"></i>
+                    Lorde Tempus
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-1">
+                    <a href="index.html#home" class="nav-link" data-section="home">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                    <a href="index.html#sobre" class="nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle mr-1"></i>Sobre
+                    </a>
+                    <a href="index.html#planos" class="nav-link" data-section="planos">
+                        <i class="fas fa-crown mr-1"></i>Planos
+                    </a>
+                    <a href="campanhas.html" class="nav-link active">
+                        <i class="fas fa-dungeon mr-1"></i>Campanhas
+                    </a>
+                    <a href="perfil.html" class="nav-link">
+                        <i class="fas fa-user mr-1"></i>Perfil
+                    </a>
+                    
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Abrir menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="index.html" class="text-xl font-bold flex items-center text-primary logo-lorde">
+                        <i class="fas fa-dice-d20 mr-2"></i>
+                        Lorde Tempus
+                    </a>
+                    <button id="closeMobileMenu" class="text-2xl" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mobile-menu-content">
+                    <a href="index.html#home" class="mobile-nav-link" data-section="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="index.html#sobre" class="mobile-nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Sobre</span>
+                    </a>
+                    <a href="index.html#planos" class="mobile-nav-link" data-section="planos">
+                        <i class="fas fa-crown"></i>
+                        <span>Planos</span>
+                    </a>
+                    <a href="campanhas.html" class="mobile-nav-link active">
+                        <i class="fas fa-dungeon"></i>
+                        <span>Campanhas</span>
+                    </a>
+                    <a href="biblia-kombo.html" class="mobile-nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Bíblia do Kombo</span>
+                    </a>
+                    <a href="perfil.html" class="mobile-nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    
+                    <button id="themeToggleMobile" class="mobile-theme-toggle" data-theme-toggle>
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                        <span class="theme-text">Modo Escuro</span>
+                        <span class="theme-indicator">OFF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="campanhas-hero min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="hero-title mb-6 animate-slideInLeft">
+                    CAMPANHAS<br>
+                    <span style="color: #ff0043; font-family: 'Trend Slab Four', serif !important;">Disponíveis</span>
+                </h1>
+                <p class="hero-subtitle mb-8 animate-slideInRight delay-200">
+                    Explore as aventuras épicas disponíveis na Lorde Tempus. Para participar das campanhas, 
+                    é necessário ter um plano ativo.
+                </p>
+                
+                <!-- Trust indicators -->
+                <div class="hero-stats mt-8 grid grid-cols-3 gap-6 animate-fadeInUp delay-300">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalCampanhas" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">0</div>
+                        <div class="stat-label" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">Campanhas Ativas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalJogadores" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">0</div>
+                        <div class="stat-label" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">Aventureiros</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">5★</div>
+                        <div class="stat-label" style="color: #fff; font-family: 'Trend Slab Four', serif !important;">Qualidade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <a href="#filtros" class="scroll-link">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Filtros Section -->
+    <section id="filtros" class="section-padding bg-light-surface dark:bg-dark-surface">
+        <div class="container mx-auto px-4">
+            <div class="section-header text-center mb-8">
+                <h2 class="section-title animate-fadeInUp">Encontre Sua Aventura</h2>
+                <p class="section-subtitle animate-fadeInUp delay-200">
+                    Use os filtros abaixo para encontrar a campanha perfeita para você
+                </p>
+            </div>
+
+            <!-- Filtros Form -->
+            <form id="filtro-campanhas" class="filtros-grid animate-fadeInUp delay-300">
+                <div class="filtro-group">
+                    <label for="filtro-sistema" class="filtro-label">
+                        <i class="fas fa-gamepad mr-2"></i>Sistema
+                    </label>
+                    <select id="filtro-sistema" class="filtro-select">
+                        <option value="">Todos os sistemas</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-group">
+                    <label for="filtro-vagas" class="filtro-label">
+                        <i class="fas fa-users mr-2"></i>Vagas
+                    </label>
+                    <select id="filtro-vagas" class="filtro-select">
+                        <option value="">Todas as vagas</option>
+                    </select>
+                </div>
+                
+                <div class="filtro-group">
+                    <label for="filtro-dia" class="filtro-label">
+                        <i class="fas fa-calendar mr-2"></i>Dia da Semana
+                    </label>
+                    <select id="filtro-dia" class="filtro-select">
+                        <option value="">Todos os dias</option>
+                </select>
+            </div>
+                
+                <div class="filtro-group">
+                    <label for="filtro-horario" class="filtro-label">
+                        <i class="fas fa-clock mr-2"></i>Horário
+                    </label>
+                    <select id="filtro-horario" class="filtro-select">
+                        <option value="">Todos os horários</option>
+                </select>
+            </div>
+                
+                <div class="filtro-actions">
+                    <button type="button" id="aplicar-filtros" class="lorde-btn">
+                        <i class="fas fa-filter mr-2"></i>
+                        Aplicar Filtros
+                    </button>
+                    <button type="button" id="limpar-filtros" class="accent-btn">
+                        <i class="fas fa-eraser mr-2"></i>
+                        Limpar
+                    </button>
+            </div>
+        </form>
+        </div>
+    </section>
+
+    <!-- Campanhas Section -->
+    <section class="section-padding">
+        <div class="container mx-auto px-4">
+            <!-- Loading State -->
+            <div id="loading-campanhas" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Carregando campanhas...</p>
+            </div>
+
+            <!-- Campanhas Grid -->
+            <div id="campanhas-lista" class="campanhas-grid hidden"></div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden">
+                <div class="empty-icon">
+                    <i class="fas fa-dragon"></i>
+                </div>
+                <h3>Nenhuma campanha encontrada</h3>
+                <p>Tente ajustar os filtros ou volte mais tarde para novas aventuras.</p>
+                <a href="index.html#planos" class="lorde-btn">
+                    <i class="fas fa-crown mr-2"></i>
+                    Ver Planos
+                </a>
+            </div>
+
+            <!-- CTA para não assinantes -->
+            <div class="campanhas-cta text-center mt-16 animate-fadeInUp delay-600">
+                <div class="cta-container">
+                    <div class="cta-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="cta-title">Quer participar das campanhas?</h3>
+                    <p class="cta-text">
+                        Para requisitar vagas nas campanhas, você precisa ter um plano ativo. 
+                        Escolha o plano ideal para você e comece sua jornada!
+                    </p>
+                    <div class="cta-actions">
+                        <a href="index.html#planos" class="lorde-btn">
+                            <i class="fas fa-crown mr-2"></i>
+                            Escolher Plano
+                        </a>
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" class="discord-btn">
+                            <i class="fab fa-discord mr-2"></i>
+                            Falar com a Equipe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Footer -->
+     <footer class="footer-lorde">
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex flex-col items-center justify-center mb-8">
+                <!-- Logo e descrição -->
+                <div class="text-center mb-8">
+                    <div class="footer-brand mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-dice-d20 text-3xl mr-3 text-primary"></i>
+                            <h3 class="text-2xl font-bold logo-lorde">Lorde Tempus</h3>
+                        </div>
+                        <p class="footer-description max-w-md mx-auto">
+                            A principal plataforma de RPG online do Brasil. Conectando aventureiros 
+                            para criar histórias épicas e memoráveis desde 2023.
+                        </p>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="social-links flex justify-center gap-4">
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" 
+                           class="social-link" title="Discord" aria-label="Entrar no Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="YouTube" aria-label="Inscrever-se no YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="TikTok" aria-label="Seguir no TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapa do Site -->
+                <div class="footer-section text-center">
+                    <h4 class="footer-title">Mapa do Site</h4>
+                    <ul class="footer-links flex justify-center gap-6">
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#sobre" class="footer-link">Sobre</a></li>
+                        <li><a href="#planos" class="footer-link">Planos</a></li>
+                        <li><a href="campanhas.html" class="footer-link">Campanhas</a></li>
+                        <li><a href="biblia-kombo.html" class="footer-link">Bíblia do Kombo</a></li>
+                        <li><a href="perfil.html" class="footer-link">Perfil</a></li>
+                    </ul>
+                </div>
+
+                <!-- Copyright -->
+                <div class="footer-bottom mt-8">
+                    <div class="border-t border-opacity-20 pt-8 text-center">
+                        <p class="copyright">
+                            © 2025 Lorde Tempus. Todos os direitos reservados. 
+                            Feito com <i class="fas fa-heart text-red-500 mx-1"></i> para a comunidade RPG.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Modals -->
+    <div id="modal-requisitar-vaga" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Requisitar Vaga</h2>
+                <button id="fechar-modal-requisitar" class="modal-close" aria-label="Fechar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body-requisitar" class="modal-body">
+                <!-- Conteúdo será inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-gerenciar-jogadores" class="modal-overlay">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 class="modal-title">Gerenciar Jogadores</h2>
+                <button id="fechar-modal-gerenciar" class="modal-close" aria-label="Fechar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body-gerenciar" class="modal-body">
+                <!-- Conteúdo será inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-detalhes-campanha" class="modal-overlay">
+        <div class="modal-content modal-xlarge">
+            <div class="modal-header">
+                <h2 id="modal-detalhes-titulo" class="modal-title">Detalhes da Campanha</h2>
+                <button id="fechar-modal-detalhes" class="modal-close" aria-label="Fechar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body-detalhes" class="modal-body">
+                <!-- Conteúdo será inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/theme-manager.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/campanhas.js"></script>
+    
+    <!-- Forçar tema claro inicialmente -->
+    <script>
+        // Forçar tema claro na inicialização
+        document.documentElement.classList.remove('dark');
+        
+        // Aguardar carregamento e configurar tema
+        document.addEventListener('DOMContentLoaded', function() {
+            // Garantir que inicia em modo claro
+            if (!localStorage.getItem('lorde-tempus-theme')) {
+                localStorage.setItem('lorde-tempus-theme', 'light');
+            }
+            
+            // Aplicar tema salvo
+            const savedTheme = localStorage.getItem('lorde-tempus-theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Aguardar ThemeManager e atualizar ícones
+            setTimeout(function() {
+                if (window.themeManager) {
+                    window.themeManager.updateThemeIcons();
+                }
+            }, 500);
+        });
+    </script>
+    
+
+    
+
+    
+    <!-- Script de limpeza para remover elementos bugados -->
+    <script>
+        function limparElementosBugados() {
+            try {
+                // Remover elementos órfãos específicos que aparecem após o footer
+                const footer = document.querySelector('.footer-lorde');
+                if (footer) {
+                    let nextElement = footer.nextElementSibling;
+                    while (nextElement) {
+                        const next = nextElement.nextElementSibling;
+                        
+                        // Não remover elementos válidos
+                        if (!nextElement.id || 
+                            (!nextElement.id.includes('backToTop') && 
+                             !nextElement.id.includes('modal') && 
+                             !nextElement.classList.contains('notification') &&
+                             nextElement.tagName !== 'SCRIPT')) {
+                            
+                            const text = nextElement.textContent || '';
+                            if (text.includes('REQUISITAR VAGA') || 
+                                text.includes('GERENCIAR JOGADORES') || 
+                                text.includes('admin@') ||
+                                (!nextElement.id && !nextElement.className && text.trim())) {
+                                console.log('Removendo elemento órfão:', nextElement);
+                                nextElement.remove();
+                            }
+                        }
+                        nextElement = next;
+                    }
+                }
+                
+                // Remover divs órfãs específicas do body
+                document.querySelectorAll('body > div:not([id]):not([class])').forEach(div => {
+                    const text = div.textContent || '';
+                    if (text.includes('REQUISITAR VAGA') || 
+                        text.includes('GERENCIAR JOGADORES') || 
+                        text.includes('admin@') ||
+                        (text.length > 0 && !div.querySelector('script'))) {
+                        console.log('Removendo div órfã:', div);
+                        div.remove();
+                    }
+                });
+                
+                // Remover elementos de texto órfãos
+                document.querySelectorAll('*').forEach(el => {
+                    if (!el.id && !el.className && el.children.length === 0) {
+                        const text = el.textContent || '';
+                        if (text === 'REQUISITAR VAGA' || 
+                            text === 'GERENCIAR JOGADORES' || 
+                            text.includes('admin@empresa.com')) {
+                            console.log('Removendo elemento de texto órfão:', el);
+                            el.remove();
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.log('Erro na limpeza (ignorado):', error);
+            }
+        }
+        
+        // Executar limpeza quando a página carregar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', limparElementosBugados);
+        } else {
+            limparElementosBugados();
+        }
+        
+        // Executar limpeza periodicamente
+        setInterval(limparElementosBugados, 2000);
+        
+        // Observar mudanças no DOM de forma mais segura
+        try {
+            const observer = new MutationObserver(function(mutations) {
+                let shouldClean = false;
+                
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // Element node
+                                const text = node.textContent || '';
+                                if (!node.id && !node.className && (
+                                    text.includes('REQUISITAR VAGA') ||
+                                    text.includes('GERENCIAR JOGADORES') ||
+                                    text.includes('admin@')
+                                )) {
+                                    shouldClean = true;
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                if (shouldClean) {
+                    setTimeout(limparElementosBugados, 100);
+                }
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+        } catch (error) {
+            console.log('Observer não pôde ser criado:', error);
+        }
+    </script>
+
+    <!-- Script de debug e correção do menu mobile -->
+    <script>
+        // Debug e correção específica do menu mobile para campanhas.html
+        function debugMenuMobile() {
+            console.log('🔧 Iniciando debug do menu mobile...');
+            
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            
+            console.log('📋 Elementos encontrados:', {
+                mobileMenuBtn: !!mobileMenuBtn,
+                mobileMenuOverlay: !!mobileMenuOverlay,
+                closeMobileMenu: !!closeMobileMenu
+            });
+            
+            if (!mobileMenuBtn || !mobileMenuOverlay) {
+                console.error('❌ Elementos do menu mobile não encontrados!');
+                return;
+            }
+            
+            // Verificar se já tem event listeners
+            const hasListeners = mobileMenuBtn.onclick || mobileMenuBtn.addEventListener;
+            console.log('🎯 Event listeners:', { hasListeners });
+            
+            // Função de toggle manual
+            function forceToggleMenu() {
+                console.log('🔄 Forçando toggle do menu...');
+                
+                const isActive = mobileMenuOverlay.classList.contains('active');
+                
+                if (isActive) {
+                    mobileMenuOverlay.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                    console.log('📱 Menu fechado');
+            } else {
+                    mobileMenuOverlay.classList.add('active');
+                    mobileMenuBtn.classList.add('active');
+                    document.body.classList.add('menu-open');
+                    console.log('📱 Menu aberto');
+                }
+            }
+            
+            // Remover listeners existentes e adicionar novos
+            const newBtn = mobileMenuBtn.cloneNode(true);
+            mobileMenuBtn.parentNode.replaceChild(newBtn, mobileMenuBtn);
+            
+            // Adicionar event listener direto
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🖱️ Clique no botão mobile detectado');
+                forceToggleMenu();
+            });
+            
+            // Fechar menu
+            closeMobileMenu?.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('❌ Fechando menu via botão X');
+                mobileMenuOverlay.classList.remove('active');
+                newBtn.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+            
+            // Fechar ao clicar no overlay
+            mobileMenuOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileMenuOverlay) {
+                    console.log('❌ Fechando menu via overlay');
+                    mobileMenuOverlay.classList.remove('active');
+                    newBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+            
+            // Fechar ao clicar nos links
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    console.log('🔗 Fechando menu via link');
+                    mobileMenuOverlay.classList.remove('active');
+                    newBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+            
+            console.log('✅ Menu mobile configurado com sucesso!');
+        }
+        
+        // Executar debug quando a página carregar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(debugMenuMobile, 1000);
+            });
+            } else {
+            setTimeout(debugMenuMobile, 1000);
+    }
+    </script>
+</body>
+</html> 

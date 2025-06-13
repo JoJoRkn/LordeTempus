@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorde Tempus - Assinaturas de RPG Premium</title>
+    
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="A principal plataforma de RPG online do Brasil. Assine agora e tenha acesso a mesas exclusivas conduzidas pelos melhores mestres.">
+    <meta name="keywords" content="RPG, D&D, mesa RPG, campanha RPG, mestre RPG, assinatura RPG">
+    <meta name="author" content="Lorde Tempus">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Lorde Tempus - Assinaturas de RPG Premium">
+    <meta property="og:description" content="A principal plataforma de RPG online do Brasil">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lordetempus.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/imagens_aleatorias/Foto_de_perfil_TikTok_1.png">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="fontes/trend-slab-four.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="fontes/Helvetica-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/period-buttons.css">
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/period-pricing.js"></script>
+</head>
+<body class="transition-colors duration-300">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full navbar-lorde shadow-lg z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold flex items-center text-primary hover:opacity-80 transition-opacity logo-lorde">
+                    <i class="fas fa-dice-d20 mr-2"></i>
+                    Lorde Tempus
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-1">
+                    <a href="#home" class="nav-link active" data-section="home">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                    <a href="#sobre" class="nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle mr-1"></i>Sobre
+                    </a>
+                    <a href="#planos" class="nav-link" data-section="planos">
+                        <i class="fas fa-crown mr-1"></i>Planos
+                    </a>
+                    <a href="campanhas.html" class="nav-link">
+                        <i class="fas fa-dungeon mr-1"></i>Campanhas
+                    </a>
+                    <a href="perfil.html" class="nav-link">
+                        <i class="fas fa-user mr-1"></i>Perfil
+                    </a>
+                    
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Abrir menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="index.html" class="text-xl font-bold flex items-center text-primary logo-lorde">
+                        <i class="fas fa-dice-d20 mr-2"></i>
+                        Lorde Tempus
+                    </a>
+                    <button id="closeMobileMenu" class="text-2xl" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mobile-menu-content">
+                    <a href="#home" class="mobile-nav-link active" data-section="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#sobre" class="mobile-nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Sobre</span>
+                    </a>
+                    <a href="#planos" class="mobile-nav-link" data-section="planos">
+                        <i class="fas fa-crown"></i>
+                        <span>Planos</span>
+                    </a>
+                    <a href="campanhas.html" class="mobile-nav-link">
+                        <i class="fas fa-dungeon"></i>
+                        <span>Campanhas</span>
+                    </a>
+                    <a href="biblia-kombo.html" class="mobile-nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Bíblia do Kombo</span>
+                    </a>
+                    <a href="perfil.html" class="mobile-nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    
+                    <button id="themeToggleMobile" class="mobile-theme-toggle" data-theme-toggle>
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                        <span class="theme-text">Modo Escuro</span>
+                        <span class="theme-indicator">OFF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="hero-section min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="hero-title mb-6 animate-slideInLeft">
+                    AVENTURE-SE NO<br>
+                    <span style="color: var(--accent);">MUNDO DO RPG</span>
+                </h1>
+                <p class="hero-subtitle mb-8 animate-slideInRight delay-200">
+                    Assine agora e tenha acesso a mesas exclusivas de RPG conduzidas pelos melhores mestres do Brasil
+                </p>
+                <div class="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4 animate-fadeInUp delay-300">
+                    <a href="#planos" class="lorde-btn-large">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Assinar Agora
+                    </a>
+                    <a href="campanhas.html" class="accent-btn-large">
+                        <i class="fas fa-eye mr-2"></i>
+                        Ver Campanhas
+                    </a>
+                </div>
+                
+                <!-- Trust indicators -->
+                <div class="hero-stats mt-12 grid grid-cols-3 gap-6 animate-fadeInUp delay-400">
+                    <div class="stat-item">
+                        <div class="stat-number" style="color: #fff;">1000+</div>
+                        <div class="stat-label" style="color: #fff;">Aventureiros</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" style="color: #fff;">500+</div>
+                        <div class="stat-label" style="color: #fff;">Mesas Realizadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" style="color: #fff;">4.9★</div>
+                        <div class="stat-label" style="color: #fff;">Avaliação</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <a href="#sobre" class="scroll-link">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Sobre Section -->
+    <section id="sobre" class="section-padding bg-light-surface dark:bg-dark-surface">
+        <div class="container mx-auto px-4">
+            <!-- Section Header -->
+            <div class="section-header text-center mb-16">
+                <h2 class="section-title animate-fadeInUp">Sobre a Lorde Tempus</h2>
+                <p class="section-subtitle animate-fadeInUp delay-200">
+                    Somos a principal plataforma de RPG online do Brasil, conectando jogadores e mestres 
+                    para criar experiências épicas e memoráveis.
+                    </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Conteúdo -->
+                <div class="sobre-content animate-slideInLeft">
+                    <div class="space-y-6">
+                        <div class="content-block">
+                            <h3 class="content-title">Nossa Missão</h3>
+                            <p class="content-text">
+                                A Lorde Tempus nasceu da paixão pelo RPG e da vontade de criar uma comunidade 
+                                onde jogadores de todos os níveis possam se aventurar em mundos fantásticos. 
+                                Nossa missão é democratizar o acesso ao RPG de qualidade.
+                            </p>
+                        </div>
+                        
+                        <div class="content-block">
+                            <h3 class="content-title">Experiência Premium</h3>
+                            <p class="content-text">
+                                Com nossos planos de assinatura, você tem acesso a campanhas exclusivas, 
+                                mestres experientes e uma comunidade ativa de aventureiros prontos para 
+                                embarcar nas mais épicas jornadas.
+                            </p>
+                        </div>
+
+                        <!-- Features list -->
+                        <div class="features-list mt-8">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <span>Mestres certificados e experientes</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <span>Campanhas exclusivas e personalizadas</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <span>Comunidade ativa no Discord</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <span>Suporte premium 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discord Widget -->
+                <div class="discord-section animate-slideInRight">
+                    <div class="discord-widget-container">
+                    <iframe
+                      src="https://discord.com/widget?id=1076200293655662722&theme=dark"
+                            class="discord-widget"
+                      allowtransparency="true"
+                      frameborder="0"
+                            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+                        </iframe>
+                    </div>
+                    <div class="discord-cta mt-6 text-center">
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" class="discord-btn">
+                            <i class="fab fa-discord mr-2"></i>
+                            Junte-se à Comunidade
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planos Section -->
+    <section id="planos" class="section-padding">
+        <div class="container mx-auto px-4">
+            <!-- Section Header -->
+            <div class="section-header text-center mb-16">
+                <h2 class="section-title animate-fadeInUp">Escolha Seu Plano de Aventura</h2>
+                <p class="section-subtitle animate-fadeInUp delay-200">
+                    Cada plano oferece diferentes níveis de acesso às nossas mesas exclusivas de RPG. 
+                    Escolha o que melhor se adapta ao seu estilo de jogo.
+                </p>
+            </div>
+
+            <!-- Botões de Período -->
+            <div class="period-buttons text-center mb-8">
+                <button class="period-btn active" data-period="monthly">
+                    <span class="period-text">Mensal</span>
+                    <span class="period-discount hidden">Sem desconto</span>
+                </button>
+                <button class="period-btn" data-period="quarterly">
+                    <span class="period-text">Trimestral</span>
+                    <span class="period-discount">15% OFF</span>
+                </button>
+                <button class="period-btn" data-period="semiannual">
+                    <span class="period-text">Semestral</span>
+                    <span class="period-discount">25% OFF</span>
+                </button>
+                <button class="period-btn" data-period="annual">
+                    <span class="period-text">Anual</span>
+                    <span class="period-discount">40% OFF</span>
+                </button>
+            </div>
+
+            <!-- Planos Grid -->
+            <div class="plans-grid">
+                <!-- Plano Minuta -->
+                <div class="plan-card animate-fadeInUp" data-plan="minuta">
+                    <div class="plan-header">
+                        <div class="plan-icon">
+                            <i class="fa-brands fa-font-awesome"></i>
+                        </div>
+                        <h3 class="plan-name">Minuta</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$29,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para iniciantes</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Direito a votar no tema de um vídeo por mês no canal do YouTube</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Escolha de um vídeo do TikTok para ser postado no mês</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso ao Discord da comunidade</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="minuta">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Minutos -->
+                <div class="plan-card animate-fadeInUp delay-100" data-plan="minutos">
+                    <div class="plan-header">
+                        <div class="plan-icon">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <h3 class="plan-name">Minutos</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$49,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para exploradores</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens do Plano Minuta</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso a 12 horas mensais de uso da plataforma Foundry VTT</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todos os sistemas e módulos da Lorde Tempus</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="minutos">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Relógio -->
+                <div class="plan-card animate-fadeInUp delay-200" data-plan="relogio">
+                    <div class="plan-header">
+                        <div class="plan-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="plan-name">Relógio</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$79,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para aventureiros</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens dos planos anteriores</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso ilimitado ao Foundry VTT com todos os recursos da LT</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>1 hora por semana de suporte de um mestre oficial</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="relogio">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Lorde (Popular) -->
+                <div class="plan-card plan-featured animate-fadeInUp delay-300" data-plan="lorde">
+                    <div class="plan-badge">
+                        <i class="fas fa-star"></i>
+                        Popular
+                    </div>
+                    <div class="plan-header">
+                        <div class="plan-icon premium">
+                            <i class="fas fa-chess-king"></i>
+                        </div>
+                        <h3 class="plan-name">Lorde</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$119,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para veteranos</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens dos planos anteriores</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso ilimitado a todas as campanhas da Lorde Tempus</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Suporte prioritário 24/7</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn plan-btn-featured" data-plan="lorde">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Nobreza -->
+                <div class="plan-card animate-fadeInUp delay-400" data-plan="nobreza">
+                    <div class="plan-header">
+                        <div class="plan-icon premium">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="plan-name">Nobreza</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$199,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para duplas</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens dos planos anteriores</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso ilimitado para dois jogadores (você + 1 convidado)</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Ideal para jogar em dupla ou presentear alguém</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="nobreza">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Família Real -->
+                <div class="plan-card animate-fadeInUp delay-500" data-plan="familiareal">
+                    <div class="plan-header">
+                        <div class="plan-icon premium">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="plan-name">Família Real</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$349,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Para grupos</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens dos planos anteriores</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acesso ilimitado para três jogadores (você + 2 convidados)</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Perfeito para grupos que desejam viver aventuras juntos</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="familiareal">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Praça do Tempo (Premium) -->
+                <div class="plan-card plan-premium animate-fadeInUp delay-600" data-plan="pracadotempo">
+                    <div class="plan-badge plan-badge-premium">
+                        <i class="fas fa-crown"></i>
+                        Premium
+                    </div>
+                    <div class="plan-header">
+                        <div class="plan-icon premium purple">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h3 class="plan-name">Praça do Tempo</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$499,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Experiência premium</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens do plano Lorde</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Uma mesa exclusiva personalizada</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Cenário, sistema, ambientação e estilo narrativo sob medida</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="pracadotempo">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Atemporal -->
+                <div class="plan-card animate-fadeInUp delay-700" data-plan="atemporal">
+                    <div class="plan-header">
+                        <div class="plan-icon premium purple">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <h3 class="plan-name">Atemporal</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$999,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Acesso máximo</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens do plano Lorde</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Duas mesas exclusivas personalizadas</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Uma mesa pública com sistema de sua escolha</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="atemporal">
+                        <span class="btn-text">Assinar Agora</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Plano Cronomante -->
+                <div class="plan-card animate-fadeInUp delay-800" data-plan="cronomante">
+                    <div class="plan-header">
+                        <div class="plan-icon premium purple">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                        <h3 class="plan-name">Cronomante</h3>
+                        <div class="plan-price">
+                            <span class="price-value">R$1.499,99</span>
+                            <span class="price-period">/mês</span>
+                        </div>
+                        <p class="plan-description">Acesso exclusivo</p>
+                    </div>
+                    <ul class="plan-features">
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Todas as vantagens do plano Lorde</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Mesa pessoal conduzida pela própria Lorde Tempus</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Enredos únicos e narrativa exclusiva da criadora</span>
+                        </li>
+                    </ul>
+                    <button class="plan-btn" data-plan="cronomante">
+                        <span class="btn-text">Entrar em Contato</span>
+                        <span class="btn-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processando...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CTA adicional -->
+            <div class="plans-cta text-center mt-16 animate-fadeInUp delay-600">
+                <p class="cta-text mb-6">
+                    Não tem certeza de qual plano escolher? Nossa equipe está aqui para ajudar!
+                </p>
+                <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" class="discord-btn">
+                    <i class="fab fa-discord mr-2"></i>
+                    Falar com a Equipe
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-lorde">
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex flex-col items-center justify-center mb-8">
+                <!-- Logo e descrição -->
+                <div class="text-center mb-8">
+                    <div class="footer-brand mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-dice-d20 text-3xl mr-3 text-primary"></i>
+                            <h3 class="text-2xl font-bold logo-lorde">Lorde Tempus</h3>
+                        </div>
+                        <p class="footer-description max-w-md mx-auto">
+                            A principal plataforma de RPG online do Brasil. Conectando aventureiros 
+                            para criar histórias épicas e memoráveis desde 2023.
+                        </p>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="social-links flex justify-center gap-4">
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" 
+                           class="social-link" title="Discord" aria-label="Entrar no Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="YouTube" aria-label="Inscrever-se no YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="TikTok" aria-label="Seguir no TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapa do Site -->
+                <div class="footer-section text-center">
+                    <h4 class="footer-title">Mapa do Site</h4>
+                    <ul class="footer-links flex justify-center gap-6">
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#sobre" class="footer-link">Sobre</a></li>
+                        <li><a href="#planos" class="footer-link">Planos</a></li>
+                        <li><a href="campanhas.html" class="footer-link">Campanhas</a></li>
+                        <li><a href="biblia-kombo.html" class="footer-link">Bíblia do Kombo</a></li>
+                        <li><a href="perfil.html" class="footer-link">Perfil</a></li>
+                    </ul>
+                </div>
+
+                <!-- Copyright -->
+                <div class="footer-bottom mt-8">
+                    <div class="border-t border-opacity-20 pt-8 text-center">
+                        <p class="copyright">
+                            © 2025 Lorde Tempus. Todos os direitos reservados. 
+                            Feito com <i class="fas fa-heart text-red-500 mx-1"></i> para a comunidade RPG.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script type="module" src="js/theme-manager.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script>
+        // Funcionalidades específicas da página index
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏠 Página index carregada');
+
+            // Botões de planos - Links reais de pagamento
+            document.querySelectorAll('.plan-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const plan = this.getAttribute('data-plan');
+                    const btnText = this.querySelector('.btn-text');
+                    const btnLoading = this.querySelector('.btn-loading');
+                    
+                    // Obter o período selecionado
+                    const activePeriod = document.querySelector('.period-btn.active').getAttribute('data-period');
+                    
+                    // Definir URLs de pagamento para cada plano e período
+                    const paymentUrls = {
+                        // Mensal
+                        'monthly': {
+                            'minuta': 'https://invoice.infinitepay.io/plans/lordetempus/5hNU8UQTmD',
+                            'minutos': 'https://invoice.infinitepay.io/plans/lordetempus/B2fa2tnjD',
+                            'relogio': 'https://invoice.infinitepay.io/plans/lordetempus/wtZXfv0CJ',
+                            'lorde': 'https://invoice.infinitepay.io/plans/lordetempus/SWjE5szn',
+                            'nobreza': 'https://invoice.infinitepay.io/plans/lordetempus/5hNOx2L26p',
+                            'familiareal': 'https://invoice.infinitepay.io/plans/lordetempus/ZKw7yaqM1',
+                            'pracadotempo': 'https://invoice.infinitepay.io/plans/lordetempus/1tn6tmOr3N',
+                            'atemporal': 'https://invoice.infinitepay.io/plans/lordetempus/2qgW5uETi5',
+                            'cronomante': 'https://discord.gg/NHMZyCXGuJ'
+                        },
+                        // Trimestral
+                        'quarterly': {
+                            'minuta': 'https://invoice.infinitepay.io/plans/lordetempus/2qvDyDG24h',
+                            'minutos': 'https://invoice.infinitepay.io/plans/lordetempus/74lm2sPm5',
+                            'relogio': 'https://invoice.infinitepay.io/plans/lordetempus/B3ZwxTRBz',
+                            'lorde': 'https://invoice.infinitepay.io/plans/lordetempus/wyQclK6Cj',
+                            'nobreza': 'https://invoice.infinitepay.io/plans/lordetempus/M7A6TAR51',
+                            'familiareal': 'https://invoice.infinitepay.io/plans/lordetempus/1twsSlmp5n',
+                            'pracadotempo': 'https://invoice.infinitepay.io/plans/lordetempus/5hqeZjIJUh',
+                            'atemporal': 'https://invoice.infinitepay.io/plans/lordetempus/NaZttVE4D',
+                            'cronomante': 'https://discord.gg/NHMZyCXGuJ'
+                        },
+                        // Semestral
+                        'semiannual': {
+                            'minuta': 'https://invoice.infinitepay.io/plans/lordetempus/5hqiyzAgm1',
+                            'minutos': 'https://invoice.infinitepay.io/plans/lordetempus/2qvNO9ITHV',
+                            'relogio': 'https://invoice.infinitepay.io/plans/lordetempus/2qvOCMGfPh',
+                            'lorde': 'https://invoice.infinitepay.io/plans/lordetempus/5hqoECMVmz',
+                            'nobreza': 'https://invoice.infinitepay.io/plans/lordetempus/5hqq4WCETf',
+                            'familiareal': 'https://invoice.infinitepay.io/plans/lordetempus/2qvQkE9WCV',
+                            'pracadotempo': 'https://invoice.infinitepay.io/plans/lordetempus/2qvRVJfJO3',
+                            'atemporal': 'https://invoice.infinitepay.io/plans/lordetempus/iEMZ1BOGB',
+                            'cronomante': 'https://discord.gg/NHMZyCXGuJ'
+                        },
+                        // Anual
+                        'annual': {
+                            'minuta': 'https://invoice.infinitepay.io/plans/lordetempus/5hqx2tXHpL',
+                            'minutos': 'https://invoice.infinitepay.io/plans/lordetempus/5hqy6aJnCj',
+                            'relogio': 'https://invoice.infinitepay.io/plans/lordetempus/2qvUaR5gDH',
+                            'lorde': 'https://invoice.infinitepay.io/plans/lordetempus/5hr0T2qmwj',
+                            'nobreza': 'https://invoice.infinitepay.io/plans/lordetempus/5hr2ZOMB2r',
+                            'familiareal': 'https://invoice.infinitepay.io/plans/lordetempus/2qvXrh4Cdh',
+                            'pracadotempo': 'https://invoice.infinitepay.io/plans/lordetempus/ZNug3BOQR',
+                            'atemporal': 'https://invoice.infinitepay.io/plans/lordetempus/TUGKZdmAF',
+                            'cronomante': 'https://discord.gg/NHMZyCXGuJ'
+                        }
+                    };
+                    
+                    // Verificar se o plano tem URL de pagamento
+                    const paymentUrl = paymentUrls[activePeriod][plan];
+                    if (!paymentUrl) {
+                        alert('Plano não disponível. Entre em contato conosco no Discord.');
+                        return;
+                    }
+                    
+                    // Mostrar loading
+                    btnText.classList.add('hidden');
+                    btnLoading.classList.remove('hidden');
+                    
+                    // Redirecionar para a página de pagamento
+                    window.location.href = paymentUrl;
+                });
+            });
+
+            // Stats counter animation
+            const statsCounters = document.querySelectorAll('.stat-number');
+            const animateCounter = (element) => {
+                const originalText = element.textContent.trim();
+                
+                // Verificar se o elemento contém apenas números e o símbolo "+"
+                // Se contém outros caracteres (como ★), não animar
+                if (!/^\d+\+?$/.test(originalText)) {
+                    return; // Não animar elementos com caracteres especiais
+                }
+                
+                const target = parseInt(originalText.replace(/\D/g, ''));
+                if (isNaN(target)) return; // Se não conseguir extrair número, não animar
+                
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        element.textContent = originalText; // Restaurar texto original
+                        clearInterval(timer);
+                    } else {
+                        const displayValue = Math.floor(current);
+                        const hasPlus = originalText.includes('+');
+                        element.textContent = hasPlus ? displayValue + '+' : displayValue;
+                    }
+                }, 40);
+            };
+
+            // Animar contadores quando visíveis
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+
+            statsCounters.forEach(counter => observer.observe(counter));
+        });
+        
+        // Debug e correção específica do menu mobile
+        function debugMenuMobile() {
+            console.log('🔧 Iniciando debug do menu mobile...');
+            
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            
+            if (!mobileMenuBtn || !mobileMenuOverlay) {
+                console.error('❌ Elementos do menu mobile não encontrados!');
+                return;
+            }
+            
+            // Função de toggle manual
+            function forceToggleMenu() {
+                const isActive = mobileMenuOverlay.classList.contains('active');
+                
+                if (isActive) {
+                    mobileMenuOverlay.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                } else {
+                    mobileMenuOverlay.classList.add('active');
+                    mobileMenuBtn.classList.add('active');
+                    document.body.classList.add('menu-open');
+                }
+            }
+            
+            // Remover listeners existentes e adicionar novos
+            const newBtn = mobileMenuBtn.cloneNode(true);
+            mobileMenuBtn.parentNode.replaceChild(newBtn, mobileMenuBtn);
+            
+            // Adicionar event listener direto
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                forceToggleMenu();
+            });
+            
+            // Fechar menu
+            closeMobileMenu?.addEventListener('click', function(e) {
+                e.preventDefault();
+                mobileMenuOverlay.classList.remove('active');
+                newBtn.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+            
+            // Fechar ao clicar no overlay
+            mobileMenuOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileMenuOverlay) {
+                    mobileMenuOverlay.classList.remove('active');
+                    newBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+            
+            // Fechar ao clicar nos links
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenuOverlay.classList.remove('active');
+                    newBtn.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+            
+            console.log('✅ Menu mobile configurado com sucesso!');
+        }
+        
+        // Executar debug quando a página carregar
+        setTimeout(debugMenuMobile, 1000);
+    </script>
+</body>
+</html> 

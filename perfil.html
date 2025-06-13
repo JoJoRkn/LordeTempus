@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Lorde Tempus</title>
+    
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="Gerencie seu perfil na Lorde Tempus. Visualize seus planos, campanhas e informações pessoais.">
+    <meta name="keywords" content="perfil RPG, conta RPG, planos RPG, mesas RPG, administração">
+    <meta name="author" content="Lorde Tempus">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Perfil - Lorde Tempus">
+    <meta property="og:description" content="Gerencie seu perfil na Lorde Tempus">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lordetempus.com/perfil">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/imagens_aleatorias/Foto_de_perfil_TikTok_1.png">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="fontes/trend-slab-four.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="fontes/Helvetica-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Trend+Slab+Four:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'Trend Slab Four';
+            src: url('fontes/trend-slab-four.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Helvetica';
+            src: url('fontes/Helvetica.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Trend Slab Four', serif !important;
+        }
+        
+        body, p, a, li, label, input, textarea, select, button, span, div {
+            font-family: 'Helvetica', Arial, sans-serif !important;
+        }
+
+        /* Background com FundoVerdeAmassado.png */
+        .perfil-hero {
+            background: linear-gradient(135deg, rgba(0, 252, 200, 0.1) 0%, rgba(0, 191, 174, 0.05) 100%),
+                        url('images/Papeis_amassados/FundoVerdeAmassado.png') center/cover;
+            min-height: 40vh;
+            position: relative;
+        }
+        
+        .perfil-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        
+        .perfil-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Styles específicos do perfil */
+        @keyframes fade-in { 
+            from { opacity: 0; transform: translateY(20px);} 
+            to { opacity: 1; transform: translateY(0);} 
+        }
+        .animate-fade-in { 
+            animation: fade-in 0.5s; 
+        }
+
+        /* Ajuste para as abas ficarem arredondadas corretamente */
+    #profileTabs .tab-btn {
+        border-radius: 1rem 1rem 0 0 !important;
+        margin-right: 0.5rem;
+        margin-bottom: -2px;
+        position: relative;
+        z-index: 1;
+    }
+    #profileTabs .tab-btn:last-child {
+        margin-right: 0;
+    }
+    #profileTabs .tab-btn.active, #profileTabs .tab-btn.border-\[#00FCC8\] {
+        z-index: 2;
+    }
+        
+        /* Garantir que abas ocultas fiquem invisíveis */
+        .tab-content.hidden { 
+            display: none !important; 
+        }
+
+    /* Autocomplete admin - bonito e integrado */
+    .admin-autocomplete {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+            background: var(--surface-dark);
+            border: 1px solid var(--primary);
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 24px 0 rgba(0,252,200,0.10);
+        z-index: 100;
+        margin-top: 0.25rem;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0.25rem 0;
+    }
+        
+    .admin-autocomplete .admin-autocomplete-opt {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+            color: var(--text-light);
+        transition: background 0.15s, color 0.15s;
+        border-radius: 0.5rem;
+        margin: 0.1rem 0.25rem;
+    }
+        
+    .admin-autocomplete .admin-autocomplete-opt:hover {
+            background: var(--primary);
+            color: var(--surface-dark);
+        }
+
+        /* Melhorias visuais para o perfil */
+        .perfil-card {
+            background: var(--surface-light);
+            border: 1px solid rgba(0, 252, 200, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dark .perfil-card {
+            background: var(--surface-dark);
+            border-color: rgba(0, 252, 200, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-avatar {
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsividade das abas */
+        @media (max-width: 768px) {
+            #profileTabs {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+            
+            #profileTabs .tab-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 0.75rem;
+                margin-right: 0.25rem;
+            }
+        }
+        
+        /* Estilos do painel admin */
+        .admin-nav-btn {
+            background: var(--surface-light);
+            border: 2px solid rgba(0, 252, 200, 0.2);
+            color: var(--text-dark);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dark .admin-nav-btn {
+            background: var(--surface-dark);
+            color: var(--text-light);
+        }
+        
+        .admin-nav-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0, 252, 200, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para upload de imagem de campanha */
+        .image-upload-container {
+            width: 100%;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark .image-upload-area {
+            border-color: #4a5568;
+            background: #2d3748;
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(0, 252, 200, 0.05);
+        }
+
+        .dark .image-upload-area:hover {
+            background: rgba(0, 252, 200, 0.1);
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-image-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .admin-nav-btn.active {
+            background: var(--primary);
+            color: var(--surface-dark);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 252, 200, 0.3);
+        }
+        
+        .admin-section {
+            transition: opacity 0.3s ease;
+        }
+        
+        .admin-section.hidden {
+            display: none;
+        }
+        
+        /* Estilos para lista de usuários */
+        .user-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .user-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Botões de ação do admin */
+        .admin-action-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .admin-action-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Estilos para imagens das campanhas no painel admin */
+        .campanha-admin-imagem {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .campanha-admin-imagem img {
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: brightness(0.9);
+        }
+        
+        .campanha-admin-imagem:hover img {
+            transform: scale(1.02);
+            filter: brightness(1);
+        }
+        
+        .campanha-admin-imagem::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 60%, rgba(0, 252, 200, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .campanha-admin-imagem:hover::after {
+            opacity: 1;
+        }
+
+        /* Modal responsivo */
+        @media (max-width: 768px) {
+            .modal-content.modal-large {
+                width: 95%;
+                max-height: 90vh;
+                margin: 2.5vh auto;
+            }
+            
+            .admin-nav {
+                margin-bottom: 1rem;
+            }
+            
+            .admin-nav-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .campanha-admin-imagem img {
+                height: 120px;
+            }
+        }
+        
+        /* Estilos do Chat de Mensagens */
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .chat-container {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chat-messages {
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 252, 200, 0.03) 0%, transparent 50%),
+                linear-gradient(45deg, rgba(0, 252, 200, 0.01) 25%, transparent 25%);
+        }
+        
+        .dark .chat-messages {
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 252, 200, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, rgba(0, 252, 200, 0.02) 25%, transparent 25%);
+        }
+        
+        .message-item {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .message-item.sent {
+            justify-content: flex-end;
+        }
+        
+        .message-item.received {
+            justify-content: flex-start;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+        
+        .message-item.sent .message-bubble {
+            background: var(--primary) !important;
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .message-item.received .message-bubble {
+            border-bottom-left-radius: 0.25rem;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        .message-item.sent .message-time {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 252, 200, 0.2);
+        }
+        
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scroll personalizado para área de mensagens */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Status de mensagem */
+        .message-status {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 0.25rem;
+        }
+        
+        .message-status i {
+            margin-right: 0.25rem;
+        }
+        
+        /* Responsividade do chat */
+        @media (max-width: 768px) {
+            .chat-container {
+                border-radius: 0.5rem;
+                margin: 0 0.5rem;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
+            
+            .chat-messages {
+                height: 300px;
+            }
+            
+            #mensagemInput {
+                font-size: 16px; /* Evita zoom no iOS */
+            }
+        }
+        
+        /* Estilos do Painel Admin - Mensagens */
+        .stat-card {
+            background: var(--surface-light);
+            border: 1px solid rgba(0, 252, 200, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .stat-card {
+            background: var(--surface-dark);
+            border-color: rgba(0, 252, 200, 0.3);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 252, 200, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .dark .stat-label {
+            color: var(--text-dark);
+        }
+        
+        /* Status badges */
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-nova {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-lida {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-respondida {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-resolvida {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+        
+        .dark .status-nova {
+            background: rgba(146, 64, 14, 0.2);
+            color: #fbbf24;
+        }
+        
+        .dark .status-lida {
+            background: rgba(6, 95, 70, 0.2);
+            color: #34d399;
+        }
+        
+        .dark .status-respondida {
+            background: rgba(30, 64, 175, 0.2);
+            color: #60a5fa;
+        }
+        
+        .dark .status-resolvida {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+        }
+        
+        /* Categoria badges */
+        .categoria-badge {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .categoria-badge.problema {
+            background: #fecaca;
+            color: #b91c1c;
+        }
+        
+        .categoria-badge.duvida {
+            background: #bfdbfe;
+            color: #1d4ed8;
+        }
+        
+        .categoria-badge.sugestao {
+            background: #d9f99d;
+            color: #365314;
+        }
+        
+        .categoria-badge.planos {
+            background: #fde68a;
+            color: #92400e;
+        }
+        
+        .categoria-badge.conta {
+            background: #e9d5ff;
+            color: #7c2d12;
+        }
+        
+        .categoria-badge.geral {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .dark .categoria-badge.problema {
+            background: rgba(185, 28, 28, 0.2);
+            color: #fca5a5;
+        }
+        
+        .dark .categoria-badge.duvida {
+            background: rgba(29, 78, 216, 0.2);
+            color: #93c5fd;
+        }
+        
+        .dark .categoria-badge.sugestao {
+            background: rgba(54, 83, 20, 0.2);
+            color: #bef264;
+        }
+        
+        .dark .categoria-badge.planos {
+            background: rgba(146, 64, 14, 0.2);
+            color: #fcd34d;
+        }
+        
+        .dark .categoria-badge.conta {
+            background: rgba(124, 45, 18, 0.2);
+            color: #ddd6fe;
+        }
+        
+        .dark .categoria-badge.geral {
+            background: rgba(55, 65, 81, 0.2);
+            color: #d1d5db;
+        }
+        
+        /* Conversas */
+        .conversa-item {
+            border-left: 4px solid transparent;
+        }
+        
+        .conversa-item:hover {
+            border-left-color: var(--primary);
+        }
+        
+        .conversa-item.nova {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+        
+        .conversa-item.urgente {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        /* Responsividade do admin */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .conversa-item .flex {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .conversa-item .flex-col {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+        
+        /* Estilos para interface de cliente focado */
+        .conversa-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+        
+        .filtro-cliente-ativo {
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .mensagens-cliente-lista {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .mensagem-item {
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
+            margin: 0.25rem;
+        }
+        
+        .mensagem-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .mensagem-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mensagem-conteudo {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .mensagem-conteudo {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Highlight para mensagens não lidas */
+        .mensagem-item.nao-lida {
+            background: rgba(245, 158, 11, 0.05);
+            border-left-color: #f59e0b !important;
+        }
+        
+        .mensagem-item.urgente {
+            background: rgba(239, 68, 68, 0.05);
+            border-left-color: #ef4444 !important;
+        }
+        
+        /* Animação para botões de ação */
+        .mensagem-item button {
+            transition: all 0.15s ease;
+        }
+        
+        .mensagem-item button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Scroll customizado para lista de mensagens */
+        .mensagens-cliente-lista::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .mensagens-cliente-lista::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+        
+        .mensagens-cliente-lista::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .mensagens-cliente-lista::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Estilos do Modal de Chat Dinâmico */
+        .modal-chat {
+            max-width: 800px;
+            width: 90vw;
+            height: 80vh;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #059669 100%);
+            color: white;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .chat-historico {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8fafc;
+            max-height: 400px;
+        }
+        
+        .dark .chat-historico {
+            background: #0f172a;
+        }
+        
+        .chat-mensagem {
+            margin-bottom: 1rem;
+            display: flex;
+        }
+        
+        .chat-mensagem.cliente {
+            justify-content: flex-start;
+        }
+        
+        .chat-mensagem.admin {
+            justify-content: flex-end;
+        }
+        
+        .chat-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-mensagem.cliente .chat-bubble {
+            background: white;
+            color: #1f2937;
+            border-bottom-left-radius: 0.25rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .dark .chat-mensagem.cliente .chat-bubble {
+            background: #374151;
+            color: #f3f4f6;
+        }
+        
+        .chat-mensagem.admin .chat-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .chat-conteudo {
+            line-height: 1.4;
+        }
+        
+        .chat-meta {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            opacity: 0.8;
+        }
+        
+        .chat-form-container {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            border-radius: 0 0 1rem 1rem;
+            padding: 1rem;
+        }
+        
+        .dark .chat-form-container {
+            background: #1e293b;
+            border-top-color: #374151;
+        }
+        
+        .chat-form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+        
+        .chat-textarea-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chat-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1.5rem;
+            background: white;
+            color: #1f2937;
+            resize: none;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            max-height: 120px;
+        }
+        
+        .dark .chat-textarea {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+        
+        .chat-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .dark .chat-textarea:focus {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        .chat-textarea::placeholder {
+            color: #9ca3af;
+        }
+        
+        .dark .chat-textarea::placeholder {
+            color: #6b7280;
+        }
+        
+        .chat-contador {
+            position: absolute;
+            bottom: -1.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .dark .chat-contador {
+            color: #6b7280;
+        }
+        
+        .chat-btn-enviar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.125rem;
+        }
+        
+        .chat-btn-enviar:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .chat-btn-enviar:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .dark .chat-btn-enviar:disabled {
+            background: #4b5563;
+        }
+        
+        /* Scrollbar para histórico do chat */
+        .chat-historico::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-historico::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .dark .chat-historico::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        
+        .chat-historico::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark .chat-historico::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* === ESTILOS DA ABA MENSAGENS === */
+        .messages-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .messages-container {
+            background: #1e293b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 1rem 1rem 0 0;
+            padding: 1.5rem;
+        }
+        
+        .chat-messages {
+            background: #f8fafc;
+            min-height: 400px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .dark .chat-messages {
+            background: #000000;
+        }
+        
+        .message-item {
+            margin-bottom: 1rem;
+        }
+        
+        .message-item.sent {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .message-item.received {
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-item.sent .message-bubble {
+            background: #10b981;
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .message-item.received .message-bubble {
+            background: white;
+            color: #1f2937;
+            border-bottom-left-radius: 0.25rem;
+            border-left: 4px solid #10b981;
+        }
+        
+        .dark .message-item.received .message-bubble {
+            background: #374151;
+            color: #f3f4f6;
+            border-left-color: #10b981;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            opacity: 0.8;
+        }
+        
+        .message-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .chat-input-container {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            border-radius: 0 0 1rem 1rem;
+            padding: 1rem;
+        }
+        
+        .dark .chat-input-container {
+            background: #171717;
+            border-top-color: #374151;
+        }
+        
+        .chat-input-form {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+        
+        .chat-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1.5rem;
+            background: white;
+            color: #1f2937;
+            resize: none;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .chat-input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .dark .chat-input:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        .chat-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .dark .chat-input::placeholder {
+            color: #6b7280;
+        }
+        
+        .chat-send-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.125rem;
+        }
+        
+        .chat-send-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .chat-send-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .dark .chat-send-btn:disabled {
+            background: #4b5563;
+        }
+        
+        .char-counter {
+            position: absolute;
+            bottom: -1.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .dark .char-counter {
+            color: #6b7280;
+        }
+        
+        .chat-info {
+            background: #f3f4f6;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .dark .chat-info {
+            background: #474747;
+        }
+        
+        .chat-info-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .dark .chat-info-text {
+            color: #9ca3af;
+        }
+        
+        /* Scrollbar personalizada para área de mensagens */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .dark .chat-messages::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark .chat-messages::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .dark .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Animações para mensagens */
+        .message-item {
+            animation: fadeInUp 0.3s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estados vazios */
+        .chat-empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+        
+        .dark .chat-empty-state {
+            color: #9ca3af;
+        }
+        
+        .chat-empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+        
+        .dark .chat-empty-state i {
+            color: #4b5563;
+        }
+        
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+            
+            .chat-input-form {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .chat-send-btn {
+                align-self: flex-end;
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            
+            .char-counter {
+                position: static;
+                text-align: right;
+                margin-top: 0.25rem;
+        }
+    }
+        /* === ESTILOS DO DASHBOARD DE MENSAGENS ADMIN === */
+        
+        /* Dashboard principal */
+        .mensagens-dashboard {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border-radius: 0.75rem;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .dark .mensagens-dashboard {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+            border-left-color: #60a5fa;
+        }
+        
+        /* Cards de estatísticas */
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .stat-card {
+            background: #374151;
+            border-color: #4b5563;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card.nova {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .stat-card.respondida {
+            border-left: 4px solid #10b981;
+        }
+        
+        .stat-card.urgente {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+            line-height: 1;
+        }
+        
+        .stat-card.nova .stat-number {
+            color: #f59e0b;
+        }
+        
+        .stat-card.respondida .stat-number {
+            color: #10b981;
+        }
+        
+        .stat-card.urgente .stat-number {
+            color: #ef4444;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .dark .stat-label {
+            color: #9ca3af;
+        }
+        
+        /* Área de filtros */
+        .filtros-container {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .dark .filtros-container {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        /* Dropdowns de filtro */
+        .filtro-select {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        
+        .dark .filtro-select {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+        }
+        
+        .filtro-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .dark .filtro-select:focus {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        /* Botões de ação */
+        .btn-admin {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-admin.atualizar {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-admin.atualizar:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .btn-admin.marcar-lidas {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-admin.marcar-lidas:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        
+        /* Lista de conversas */
+        .conversas-container {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        
+        .dark .conversas-container {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        .conversas-header {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem;
+        }
+        
+        .dark .conversas-header {
+            background: #111827;
+            border-bottom-color: #374151;
+        }
+        
+        .conversas-titulo {
+            color: #111827;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .dark .conversas-titulo {
+            color: #f9fafb;
+        }
+        
+        /* Items de conversa */
+        .conversa-item {
+            background: white;
+            border-bottom: 1px solid #f3f4f6;
+            padding: 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .dark .conversa-item {
+            background: #1f2937;
+            border-bottom-color: #374151;
+        }
+        
+        .conversa-item:hover {
+            background: #f9fafb;
+        }
+        
+        .dark .conversa-item:hover {
+            background: #111827;
+        }
+        
+        .conversa-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Avatar e indicadores */
+        .conversa-avatar {
+            border: 2px solid #e5e7eb;
+            position: relative;
+        }
+        
+        .dark .conversa-avatar {
+            border-color: #4b5563;
+        }
+        
+        .badge-nao-lidas {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+        }
+        
+        /* Informações da conversa */
+        .conversa-nome {
+            color: #111827;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .dark .conversa-nome {
+            color: #f9fafb;
+        }
+        
+        .conversa-email {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .dark .conversa-email {
+            color: #9ca3af;
+        }
+        
+        .conversa-preview {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .dark .conversa-preview {
+            color: #d1d5db;
+        }
+        
+        .conversa-timestamp {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+        
+        .dark .conversa-timestamp {
+            color: #6b7280;
+        }
+        
+        /* Badges de status e categoria */
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-nova {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .dark .status-nova {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+        
+        .status-lida {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .dark .status-lida {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+        
+        .status-respondida {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .dark .status-respondida {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+        
+        .status-resolvida {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+        
+        .dark .status-resolvida {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+        }
+        
+        .categoria-badge {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .categoria-badge.problema {
+            background: #fecaca;
+            color: #b91c1c;
+        }
+        
+        .dark .categoria-badge.problema {
+            background: rgba(185, 28, 28, 0.2);
+            color: #fca5a5;
+        }
+        
+        .categoria-badge.duvida {
+            background: #bfdbfe;
+            color: #1d4ed8;
+        }
+        
+        .dark .categoria-badge.duvida {
+            background: rgba(29, 78, 216, 0.2);
+            color: #93c5fd;
+        }
+        
+        .categoria-badge.sugestao {
+            background: #d9f99d;
+            color: #365314;
+        }
+        
+        .dark .categoria-badge.sugestao {
+            background: rgba(54, 83, 20, 0.2);
+            color: #bef264;
+        }
+        
+        .categoria-badge.planos {
+            background: #fde68a;
+            color: #92400e;
+        }
+        
+        .dark .categoria-badge.planos {
+            background: rgba(146, 64, 14, 0.2);
+            color: #fcd34d;
+        }
+        
+        .categoria-badge.conta {
+            background: #e9d5ff;
+            color: #7c2d12;
+        }
+        
+        .dark .categoria-badge.conta {
+            background: rgba(124, 45, 18, 0.2);
+            color: #ddd6fe;
+        }
+        
+        .categoria-badge.geral {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .dark .categoria-badge.geral {
+            background: rgba(55, 65, 81, 0.2);
+            color: #d1d5db;
+        }
+        
+        /* Botões de ação rápida */
+        .acao-rapida {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .acao-rapida.responder {
+            background: #8b5cf6;
+        }
+        
+        .acao-rapida.responder:hover {
+            background: #7c3aed;
+        }
+        
+        .acao-rapida.marcar-lida {
+            background: #10b981;
+        }
+        
+        .acao-rapida.marcar-lida:hover {
+            background: #059669;
+        }
+        
+        .acao-rapida:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Estados vazios */
+        .mensagens-empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+        
+        .dark .mensagens-empty-state {
+            color: #9ca3af;
+        }
+        
+        .mensagens-empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+        
+        .dark .mensagens-empty-state i {
+            color: #4b5563;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .mensagens-dashboard {
+                margin-bottom: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .filtros-container {
+                padding: 1rem;
+            }
+            
+            .conversa-item {
+                padding: 0.75rem;
+            }
+            
+            .conversa-item .flex {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+
+        /* === ESTILOS PARA CARD CRIAR TROFÉU (ADMIN) === */
+        
+        .criar-trofeu-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+        
+        .dark .criar-trofeu-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 193, 7, 0.08) 100%);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        .criar-trofeu-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .criar-trofeu-card {
+            background: #1f2937;
+            border-color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .criar-trofeu-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
+        }
+        
+        .dark .criar-trofeu-card:hover {
+            border-color: #ffd700;
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+        }
+        
+        .criar-trofeu-icone {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+        
+        .criar-trofeu-content {
+            flex: 1;
+        }
+        
+        .criar-trofeu-titulo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .dark .criar-trofeu-titulo {
+            color: #f9fafb;
+        }
+        
+        .criar-trofeu-descricao {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .dark .criar-trofeu-descricao {
+            color: #9ca3af;
+        }
+        
+        .criar-trofeu-arrow {
+            color: #9ca3af;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .criar-trofeu-arrow {
+            color: #6b7280;
+        }
+        
+        .criar-trofeu-card:hover .criar-trofeu-arrow {
+            color: #ffd700;
+            transform: translateX(4px);
+        }
+        
+        /* Animação de entrada para o card admin */
+        .criar-trofeu-section {
+            animation: slideInFromTop 0.5s ease-out;
+        }
+        
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsividade para o card criar troféu */
+        @media (max-width: 768px) {
+            .criar-trofeu-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                padding: 1.25rem;
+            }
+            
+            .criar-trofeu-icone {
+                width: 3rem;
+                height: 3rem;
+                font-size: 1.25rem;
+            }
+            
+            .criar-trofeu-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .criar-trofeu-card:hover .criar-trofeu-arrow {
+                transform: rotate(90deg) translateX(4px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full navbar-lorde shadow-lg z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold flex items-center text-primary hover:opacity-80 transition-opacity logo-lorde">
+                    <i class="fas fa-dice-d20 mr-2"></i>
+                    Lorde Tempus
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-1">
+                    <a href="index.html#home" class="nav-link" data-section="home">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                    <a href="index.html#sobre" class="nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle mr-1"></i>Sobre
+                    </a>
+                    <a href="index.html#planos" class="nav-link" data-section="planos">
+                        <i class="fas fa-crown mr-1"></i>Planos
+                    </a>
+                    <a href="campanhas.html" class="nav-link">
+                        <i class="fas fa-dungeon mr-1"></i>Campanhas
+                    </a>
+                    <a href="perfil.html" class="nav-link active">
+                        <i class="fas fa-user mr-1"></i>Perfil
+                    </a>
+                    
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Abrir menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="index.html" class="text-xl font-bold flex items-center text-primary logo-lorde">
+                        <i class="fas fa-dice-d20 mr-2"></i>
+                        Lorde Tempus
+                    </a>
+                    <button id="closeMobileMenu" class="text-2xl" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                </button>
+            </div>
+                <div class="mobile-menu-content">
+                    <a href="index.html#home" class="mobile-nav-link" data-section="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="index.html#sobre" class="mobile-nav-link" data-section="sobre">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Sobre</span>
+                    </a>
+                    <a href="index.html#planos" class="mobile-nav-link" data-section="planos">
+                        <i class="fas fa-crown"></i>
+                        <span>Planos</span>
+                    </a>
+                    <a href="campanhas.html" class="mobile-nav-link">
+                        <i class="fas fa-dungeon"></i>
+                        <span>Campanhas</span>
+                    </a>
+                    <a href="biblia-kombo.html" class="mobile-nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Bíblia do Kombo</span>
+                    </a>
+                    <a href="perfil.html" class="mobile-nav-link active">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    
+                    <button id="themeToggleMobile" class="mobile-theme-toggle" data-theme-toggle>
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                        <span class="theme-text">Modo Escuro</span>
+                        <span class="theme-indicator">OFF</span>
+                    </button>
+            </div>
+                            </div>
+                        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="perfil-hero flex items-center justify-center">
+        <div class="perfil-hero-content text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Perfil do Usuário</h1>
+            <p class="text-xl opacity-90">Gerencie sua conta e acompanhe sua jornada RPG</p>
+                            </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="py-16 min-h-screen">
+        <div class="container mx-auto px-4">
+        <!-- Opções de Login (visível apenas para usuários não logados) -->
+            <div id="loginOptions" class="max-w-md mx-auto perfil-card p-8 mb-8">
+                <div class="text-center mb-6">
+                    <i class="fas fa-user-circle text-6xl text-primary mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-2">Faça login para acessar seu perfil</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Entre com sua conta para gerenciar seus dados</p>
+                            </div>
+                
+                <div class="space-y-4">
+                    <button id="google-sign-in-button" class="lorde-btn w-full py-3 flex items-center justify-center">
+                        <i class="fab fa-google mr-2"></i> 
+                        Continuar com Google
+                </button>
+                    
+                    <div class="text-center text-sm text-gray-500 dark:text-gray-400">
+                        Ao fazer login, você concorda com nossos termos de uso
+                            </div>
+                            </div>
+                                </div>
+
+        <!-- Informações do Usuário (visível apenas para usuários logados) -->
+            <div id="userInfo" class="max-w-6xl mx-auto" style="display: none;">
+                <!-- Cabeçalho do Perfil -->
+                <div class="perfil-card p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <img id="user-photo" src="images/avatar-default.png" alt="Avatar" 
+                             class="user-avatar w-24 h-24 rounded-full border-4 border-primary shadow-lg bg-white object-cover">
+                        <div class="text-center md:text-left flex-1">
+                            <h2 id="user-display-name" class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Nome do Usuário</h2>
+                            <p id="user-email" class="text-gray-600 dark:text-gray-400 text-lg mb-4">email@exemplo.com</p>
+                            <button id="sign-out-button" class="text-red-500 hover:bg-red-100 dark:hover:bg-red-900 transition-colors px-4 py-2 rounded-lg font-bold" style="display:none">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+                <!-- Abas do Perfil -->
+                <div class="perfil-card">
+                    <div class="border-b border-gray-200 dark:border-gray-700">
+                        <nav class="flex space-x-2 p-4" id="profileTabs">
+                            <button class="tab-btn" data-tab="perfil">
+                                <i class="fas fa-user mr-2"></i>Perfil
+                            </button>
+                            <button class="tab-btn" data-tab="planos">
+                                <i class="fas fa-crown mr-2"></i>Planos
+                            </button>
+                            <button class="tab-btn" data-tab="endereco">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Endereço
+                            </button>
+                            <button class="tab-btn" data-tab="mesas">
+                                <i class="fas fa-dice-d20 mr-2"></i>Mesas
+                            </button>
+                            <button class="tab-btn" data-tab="trofeus">
+                                <i class="fas fa-trophy mr-2"></i>Troféus
+                            </button>
+                            <button class="tab-btn" data-tab="mensagens">
+                                <i class="fas fa-comments mr-2"></i>Mensagens
+                            </button>
+                            <button id="adminTabBtn" class="tab-btn hidden" data-tab="admin">
+                                <i class="fas fa-cogs mr-2"></i>Admin
+                            </button>
+                        </nav>
+                </div>
+
+                    <div class="p-6">
+                        <!-- Aba Perfil -->
+                        <div id="tab-perfil" class="tab-content">
+                            <h3 class="text-2xl font-bold mb-6">Informações Pessoais</h3>
+                            <form id="updateAccountForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Nome Completo</label>
+                                        <input type="text" id="accountName" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition" 
+                                               placeholder="Seu nome completo">
+                    </div>
+                    <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Discord</label>
+                                        <input type="text" id="accountDiscord" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition" 
+                                               placeholder="Seu nick do Discord (ex: usuario#1234)">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Use exatamente o mesmo nick do Discord da comunidade.</span>
+                    </div>
+                        <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Email</label>
+                                        <input type="email" id="accountEmail" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none" 
+                                               readonly>
+                        </div>
+                        <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Idade</label>
+                                        <input type="number" id="accountAge" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition" 
+                                               placeholder="Sua idade" min="13" max="120">
+                        </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Telefone</label>
+                                        <input type="tel" id="accountPhone" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition" 
+                                               placeholder="(00) 00000-0000">
+                        </div>
+                        </div>
+                                
+                                <button type="submit" class="lorde-btn px-8 py-3 font-bold text-lg">
+                                    <i class="fas fa-save mr-2"></i>Salvar Alterações
+                        </button>
+                                
+                                <div id="perfilMsg" class="mt-4"></div>
+                    </form>
+                </div>
+
+                        <!-- Aba Planos -->
+            <div id="tab-planos" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-6">Planos e Assinaturas</h3>
+                <div id="planosContainer">
+                                <div class="text-center text-gray-500 dark:text-gray-400 mb-4">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-4"></i>
+                                    <p>Carregando informações dos planos...</p>
+            </div>
+                </div>
+            </div>
+
+                        <!-- Aba Endereço -->
+            <div id="tab-endereco" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-6">Endereço de Entrega</h3>
+                            <form id="addressForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Rua</label>
+                                        <input type="text" id="addressStreet" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+                            </div>
+                            <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Número</label>
+                                        <input type="text" id="addressNumber" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+                            </div>
+                                <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Cidade</label>
+                                        <input type="text" id="addressCity" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+                                </div>
+                                <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">Estado</label>
+                                        <input type="text" id="addressState" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+                                </div>
+                                <div>
+                                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">CEP</label>
+                                        <input type="text" id="addressZip" 
+                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+                                </div>
+                            </div>
+                                
+                                <button type="submit" class="lorde-btn px-8 py-3 font-bold">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>Salvar Endereço
+                                </button>
+                    </form>
+                                </div>
+
+                        <!-- Aba Minhas Mesas -->
+            <div id="tab-mesas" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-6">Minhas Mesas de RPG</h3>
+                            <div id="minhasMesasLista">
+                                <div class="text-center text-gray-500 dark:text-gray-400">Carregando suas mesas...</div>
+                                </div>
+                            </div>
+
+                        <!-- Aba Troféus -->
+            <div id="tab-trofeus" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-6">Troféus e Conquistas</h3>
+                            
+                            <div id="trophies">
+                                <div class="text-center text-gray-500 dark:text-gray-400">Carregando conquistas...</div>
+                                </div>
+                            </div>
+
+                        <!-- Aba Mensagens -->
+                        <div id="tab-mensagens" class="tab-content hidden">
+                            <div class="messages-container">
+                                <!-- Cabeçalho do Chat -->
+                                <div class="chat-header">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-content center">
+                                            <i class="fas fa-headset text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-bold">SUPORTE LORDE TEMPUS</h3>
+                                            <p class="text-white/90">Nossa equipe está aqui para ajudar</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Área de Mensagens -->
+                                <div id="chatMessages" class="chat-messages">
+                                    <div id="mensagensLista">
+                                        <!-- Mensagem de boas-vindas -->
+                                        <div class="message-item received">
+                                            <div class="message-bubble">
+                                                <p>👋 Olá! Bem-vindo ao suporte da Lorde Tempus!</p>
+                                                <div class="message-time text-gray-500 dark:text-gray-400">
+                                                    Suporte • 31/05, 03:34
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Área de Input -->
+                                <div class="chat-input-container">
+                                    <!-- Informações do chat -->
+                                    <div class="chat-info">
+                                        <div class="flex items-center gap-2 chat-info-text">
+                                            <i class="fas fa-shield-alt text-green-500"></i>
+                                            <span>Suas mensagens são privadas e seguras. Nossa equipe responderá em breve.</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Formulário de envio -->
+                                    <form id="enviarMensagemForm" class="chat-input-form">
+                                        <div class="chat-input-wrapper">
+                                            <textarea 
+                                                id="mensagemInput" 
+                                                class="chat-input" 
+                                                placeholder="Digite sua mensagem..."
+                                                rows="1"
+                                                maxlength="1000"
+                                                required
+                                            ></textarea>
+                                            <div id="contadorCaracteres" class="char-counter">0/1000</div>
+                                        </div>
+                                        <button type="submit" class="lorde-btn">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Aba Admin -->
+                        <div id="tab-admin" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold mb-6">Painel de Administração</h3>
+                            <div id="adminConsole">
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-6 border-l-4 border-blue-500 mb-6">
+                                    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
+                                        <i class="fas fa-cogs"></i> Painel do Administrador
+                                    </h4>
+                                    <p class="text-blue-600 dark:text-blue-400">
+                                        Aqui você pode criar campanhas que aparecerão para todos os jogadores na página de campanhas.
+                                    </p>
+        </div>
+
+                                <!-- Formulário de criação de campanha será carregado dinamicamente -->
+                                <div id="criarCampanhaContainer"></div>
+                                <div id="listaCampanhasAdmin"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-lorde">
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex flex-col items-center justify-center mb-8">
+                <!-- Logo e descrição -->
+                <div class="text-center mb-8">
+                    <div class="footer-brand mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-dice-d20 text-3xl mr-3 text-primary"></i>
+                            <h3 class="text-2xl font-bold logo-lorde">Lorde Tempus</h3>
+                        </div>
+                        <p class="footer-description max-w-md mx-auto">
+                            A principal plataforma de RPG online do Brasil. Conectando aventureiros 
+                            para criar histórias épicas e memoráveis desde 2023.
+                        </p>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="social-links flex justify-center gap-4">
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" 
+                           class="social-link" title="Discord" aria-label="Entrar no Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="YouTube" aria-label="Inscrever-se no YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="TikTok" aria-label="Seguir no TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapa do Site -->
+                <div class="footer-section text-center">
+                    <h4 class="footer-title">Mapa do Site</h4>
+                    <ul class="footer-links flex justify-center gap-6">
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#sobre" class="footer-link">Sobre</a></li>
+                        <li><a href="#planos" class="footer-link">Planos</a></li>
+                        <li><a href="campanhas.html" class="footer-link">Campanhas</a></li>
+                        <li><a href="biblia-kombo.html" class="footer-link">Bíblia do Kombo</a></li>
+                        <li><a href="perfil.html" class="footer-link">Perfil</a></li>
+                    </ul>
+                </div>
+
+                <!-- Copyright -->
+                <div class="footer-bottom mt-8">
+                    <div class="border-t border-opacity-20 pt-8 text-center">
+                        <p class="copyright">
+                            © 2025 Lorde Tempus. Todos os direitos reservados. 
+                            Feito com <i class="fas fa-heart text-red-500 mx-1"></i> para a comunidade RPG.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Modais -->
+    <div id="modal-editar-campanha" class="modal-overlay">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Campanha</h3>
+                <button class="modal-close" aria-label="Fechar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+                        </div>
+            <div class="modal-body" id="modal-body-editar"></div>
+                        </div>
+                  </div>
+
+    <div id="modal-jogadores-campanha" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Jogadores da Campanha</h3>
+                <button class="modal-close" aria-label="Fechar modal">
+                    <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+            <div class="modal-body" id="modal-body-jogadores"></div>
+                        </div>
+                        </div>
+
+    <!-- Modal de Chat Dinâmico para Admin -->
+    <div id="modal-chat-cliente" class="modal-overlay">
+        <div class="modal-content modal-chat">
+            <div class="chat-header">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img id="chatClienteAvatar" src="images/avatar-default.png" 
+                             alt="Avatar" class="w-12 h-12 rounded-full border-2 border-white/20">
+                        <div>
+                            <h3 id="chatClienteNome" class="text-xl font-bold">Chat com Cliente</h3>
+                            <p id="chatClienteEmail" class="text-white/90">cliente@email.com</p>
+                        </div>
+                    </div>
+                    <button class="modal-close text-white hover:text-white/80 transition" onclick="fecharModalChatCliente()">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Histórico de mensagens -->
+            <div id="chatHistorico" class="chat-historico">
+                <div class="text-center text-gray-500 dark:text-gray-400 py-8">
+                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                    <p>Carregando histórico de mensagens...</p>
+                </div>
+            </div>
+            
+            <!-- Formulário de envio -->
+            <div class="chat-form-container">
+                <form id="formChatCliente" class="chat-form">
+                    <div class="chat-textarea-wrapper">
+                        <textarea 
+                            id="chatMensagemInput" 
+                            class="chat-textarea" 
+                            placeholder="Digite sua resposta..."
+                            rows="1"
+                            maxlength="1000"
+                            required
+                        ></textarea>
+                        <div id="chatContadorCaracteres" class="chat-contador">0/1000</div>
+                    </div>
+                    <button type="submit" class="lorde-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/theme-manager.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script type="module" src="js/perfil.js"></script>
+</body>
+</html>

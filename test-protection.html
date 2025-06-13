@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Proteção - Lorde Tempus</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            padding: 2rem;
+            font-family: Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+        }
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 2px solid #00FCC8;
+            border-radius: 0.5rem;
+            background: rgba(0, 252, 200, 0.1);
+        }
+        .test-element {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.25rem;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00FCC8;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .text-gradient {
+            background: linear-gradient(45deg, #00FCC8, #0077FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        button {
+            background: #00FCC8;
+            color: black;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .log {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Teste de Proteção do Site Lorde Tempus</h1>
+    
+    <div class="test-section">
+        <h2>Elementos Protegidos (não devem ser alterados)</h2>
+        
+        <div class="test-element">
+            <h3 class="hero-title">
+                Aventure-se no<br>
+                <span class="text-gradient">Mundo do RPG</span>
+            </h3>
+            <p class="hero-subtitle">Este texto principal não deve sumir nunca!</p>
+        </div>
+        
+        <div class="test-element">
+            <div class="stat-number">4.9★</div>
+            <p>Este elemento com estrela não deve ser alterado</p>
+        </div>
+        
+        <div class="test-element">
+            <div class="stat-number">1000+</div>
+            <p>Este elemento pode ser animado (apenas números e +)</p>
+        </div>
+        
+        <div class="test-element">
+            <div class="stat-number">500+</div>
+            <p>Este elemento também pode ser animado</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Testes de Animação</h2>
+        <button onclick="testSafeAnimation()">Testar Animação Segura</button>
+        <button onclick="testProtection()">Testar Proteção</button>
+        <button onclick="testUnsafeAnimation()">Testar Animação Insegura (deve ser bloqueada)</button>
+        <button onclick="clearLog()">Limpar Log</button>
+        <div id="log" class="log"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/theme-manager.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script>
+        let logElement;
+        
+        function log(message) {
+            if (!logElement) {
+                logElement = document.getElementById('log');
+            }
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function clearLog() {
+            if (logElement) {
+                logElement.innerHTML = '';
+            }
+        }
+        
+        function testSafeAnimation() {
+            log('🧪 Testando animação segura...');
+            const element = document.querySelector('.stat-number:nth-child(1)'); // 1000+
+            const originalContent = element.textContent;
+            log(`Conteúdo original: "${originalContent}"`);
+            
+            if (window.safeAnimateNumber) {
+                window.safeAnimateNumber(element, 1500, { preserveFormat: true });
+                log('✅ Animação segura executada');
+            } else {
+                log('❌ safeAnimateNumber não encontrada');
+            }
+        }
+        
+        function testProtection() {
+            log('🛡️ Testando proteção...');
+            const starElement = document.querySelector('.stat-number:nth-child(1)'); // 4.9★
+            const originalContent = starElement.textContent;
+            log(`Tentando alterar "${originalContent}" para "999"`);
+            
+            // Tentar alterar o conteúdo (deve ser restaurado pela proteção)
+            starElement.textContent = '999';
+            
+            setTimeout(() => {
+                const newContent = starElement.textContent;
+                if (newContent === originalContent) {
+                    log('✅ Proteção funcionou! Conteúdo restaurado');
+                } else {
+                    log(`❌ Proteção falhou! Conteúdo atual: "${newContent}"`);
+                }
+            }, 100);
+        }
+        
+        function testUnsafeAnimation() {
+            log('⚠️ Testando animação em elemento com caracteres especiais...');
+            const starElement = document.querySelector('.stat-number:nth-child(1)'); // 4.9★
+            const originalContent = starElement.textContent;
+            log(`Tentando animar elemento: "${originalContent}"`);
+            
+            if (window.safeAnimateNumber) {
+                window.safeAnimateNumber(starElement, 500, { preserveFormat: true });
+                log('Resultado: Deve ter sido bloqueado pela proteção');
+                
+                setTimeout(() => {
+                    const finalContent = starElement.textContent;
+                    if (finalContent === originalContent) {
+                        log('✅ Proteção funcionou! Elemento não foi alterado');
+                    } else {
+                        log(`❌ Proteção falhou! Conteúdo alterado para: "${finalContent}"`);
+                    }
+                }, 100);
+            } else {
+                log('❌ safeAnimateNumber não encontrada');
+            }
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Página de teste carregada');
+            log('🛡️ Proteções ativadas');
+            
+            // Verificar se as funções estão disponíveis
+            if (window.safeAnimateNumber) {
+                log('✅ safeAnimateNumber disponível');
+            } else {
+                log('❌ safeAnimateNumber não encontrada');
+            }
+            
+            if (window.protectImportantElements) {
+                log('✅ protectImportantElements disponível');
+            } else {
+                log('❌ protectImportantElements não encontrada');
+            }
+            
+            // Testar animação automática dos elementos adequados
+            setTimeout(() => {
+                log('🧪 Testando animação automática...');
+                document.querySelectorAll('.stat-number').forEach((el, index) => {
+                    const content = el.textContent;
+                    if (/^\d+\+?$/.test(content)) {
+                        log(`Elemento ${index + 1} "${content}" pode ser animado`);
+                    } else {
+                        log(`Elemento ${index + 1} "${content}" NÃO deve ser animado`);
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

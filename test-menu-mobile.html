@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Menu Mobile - Lorde Tempus</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+        }
+        .test-content {
+            padding: 100px 20px 20px;
+            text-align: center;
+        }
+        .test-info {
+            background: rgba(0, 252, 200, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .debug-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: left;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full navbar-lorde shadow-lg z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold flex items-center text-primary hover:opacity-80 transition-opacity">
+                    <i class="fas fa-dice-d20 mr-2"></i>
+                    Lorde Tempus - Teste Menu
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-1">
+                    <span class="nav-link">Menu Desktop Funcionando</span>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Abrir menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="index.html" class="text-xl font-bold flex items-center text-primary">
+                        <i class="fas fa-dice-d20 mr-2"></i>
+                        Teste Menu Mobile
+                    </a>
+                    <button id="closeMobileMenu" class="text-2xl" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mobile-menu-content">
+                    <a href="#" class="mobile-nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="mobile-nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Sobre</span>
+                    </a>
+                    <a href="#" class="mobile-nav-link">
+                        <i class="fas fa-crown"></i>
+                        <span>Planos</span>
+                    </a>
+                    <a href="#" class="mobile-nav-link active">
+                        <i class="fas fa-dungeon"></i>
+                        <span>Campanhas</span>
+                    </a>
+                    <a href="#" class="mobile-nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo de teste -->
+    <div class="test-content">
+        <h1>🧪 Teste do Menu Mobile</h1>
+        
+        <div class="test-info">
+            <h2>📱 Instruções de Teste</h2>
+            <p>1. Redimensione a janela para modo mobile (largura < 768px)</p>
+            <p>2. Clique no botão hambúrguer (☰) no canto superior direito</p>
+            <p>3. O menu deve abrir com animação suave</p>
+            <p>4. Clique no X ou fora do menu para fechar</p>
+        </div>
+
+        <div class="debug-info">
+            <h3>🔍 Debug Info:</h3>
+            <div id="debugInfo">Carregando informações de debug...</div>
+        </div>
+
+        <button onclick="testMenuFunctions()" style="background: var(--primary); color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 10px;">
+            🧪 Testar Funções do Menu
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/theme-manager.js"></script>
+    <script type="module" src="js/main.js"></script>
+    
+    <script>
+        // Script de teste específico
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debugInfo');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            
+            const info = `
+                📋 Elementos encontrados:
+                • mobileMenuBtn: ${mobileMenuBtn ? '✅ Encontrado' : '❌ Não encontrado'}
+                • mobileMenuOverlay: ${mobileMenuOverlay ? '✅ Encontrado' : '❌ Não encontrado'}
+                • closeMobileMenu: ${closeMobileMenu ? '✅ Encontrado' : '❌ Não encontrado'}
+                
+                🎯 Event Listeners:
+                • mobileMenuBtn click: ${mobileMenuBtn && mobileMenuBtn.onclick ? '✅ Configurado' : '❌ Não configurado'}
+                
+                🎨 Classes CSS:
+                • mobileMenuBtn classes: ${mobileMenuBtn ? mobileMenuBtn.className : 'N/A'}
+                • mobileMenuOverlay classes: ${mobileMenuOverlay ? mobileMenuOverlay.className : 'N/A'}
+                
+                🌐 Window objects:
+                • window.mobileMenuBtn: ${window.mobileMenuBtn ? '✅ Disponível' : '❌ Não disponível'}
+                • window.mobileMenuOverlay: ${window.mobileMenuOverlay ? '✅ Disponível' : '❌ Não disponível'}
+                
+                📱 Viewport:
+                • Largura: ${window.innerWidth}px
+                • É mobile: ${window.innerWidth < 768 ? '✅ Sim' : '❌ Não'}
+            `;
+            
+            debugDiv.innerHTML = info.replace(/\n/g, '<br>');
+        }
+        
+        function testMenuFunctions() {
+            console.log('🧪 Testando funções do menu...');
+            
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            
+            if (mobileMenuBtn) {
+                console.log('📱 Simulando clique no botão mobile...');
+                mobileMenuBtn.click();
+                
+                setTimeout(() => {
+                    console.log('🔍 Estado após clique:', {
+                        overlayClasses: mobileMenuOverlay?.className,
+                        btnClasses: mobileMenuBtn?.className,
+                        bodyClasses: document.body.className
+                    });
+                }, 500);
+            } else {
+                console.error('❌ Botão mobile não encontrado!');
+            }
+        }
+        
+        // Atualizar debug info quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updateDebugInfo, 1000);
+            
+            // Atualizar a cada 2 segundos
+            setInterval(updateDebugInfo, 2000);
+        });
+        
+        // Atualizar quando redimensionar
+        window.addEventListener('resize', updateDebugInfo);
+        
+        console.log('🧪 Página de teste do menu mobile carregada');
+    </script>
+</body>
+</html> 

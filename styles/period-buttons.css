@@ -1,0 +1,111 @@
+@font-face {
+    font-family: 'Trend Slab Four';
+    src: url('../fontes/trend-slab-four.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.period-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.period-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 1rem;
+    background: var(--card-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.period-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.period-btn:hover::before {
+    opacity: 0.1;
+}
+
+.period-btn.active {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: var(--background-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.period-text {
+    position: relative;
+    font-family: 'Trend Slab Four', sans-serif;
+    font-weight: normal;
+    font-size: 1.2rem;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.period-discount {
+    position: relative;
+    font-family: 'Trend Slab Four', sans-serif;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    z-index: 2;
+    font-weight: normal;
+    opacity: 0.9;
+}
+
+.period-btn.active .period-discount {
+    color: var(--background-color);
+    opacity: 1;
+}
+
+.period-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .period-buttons {
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .period-btn {
+        min-width: calc(50% - 0.5rem);
+        padding: 0.75rem 1rem;
+    }
+
+    .period-text {
+        font-size: 1.1rem;
+    }
+
+    .period-discount {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .period-btn {
+        min-width: 100%;
+    }
+} 

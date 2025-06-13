@@ -1,0 +1,44 @@
+{
+  "name": "lorde-tempus",
+  "version": "1.0.0",
+  "description": "Site de assinaturas de RPG da Lorde Tempus",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tailwind:dev": "npx tailwindcss -i ./css/styles.css -o ./css/output.css --watch",
+    "tailwind:build": "npx tailwindcss -i ./css/styles.css -o ./css/output.css --minify",
+    "start": "live-server",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write \"**/*.{js,html,css}\""
+  },
+  "keywords": [
+    "rpg",
+    "assinaturas",
+    "lorde-tempus",
+    "firebase",
+    "tailwindcss"
+  ],
+  "author": "Lorde Tempus",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "live-server": "^1.2.2",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.1",
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^3.0.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "firebase": "^10.8.0",
+    "firebase-admin": "^13.4.0",
+    "sweetalert2": "^11.10.5"
+  }
+}

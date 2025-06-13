@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bíblia do Kombo - Lorde Tempus</title>
+    
+    <!-- Meta tags para SEO -->
+    <meta name="description" content="A Bíblia do Kombo - Um guia completo sobre RPG com 13 livros e mais de 400 páginas de conteúdo exclusivo.">
+    <meta name="keywords" content="RPG, Bíblia do Kombo, Lorde Tempus, RPG Guide, RPG Bible">
+    <meta name="author" content="Lorde Tempus">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Bíblia do Kombo - Lorde Tempus">
+    <meta property="og:description" content="Um guia completo sobre RPG com 13 livros e mais de 400 páginas de conteúdo exclusivo">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lordetempus.com/biblia-kombo">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/imagens_aleatorias/Foto_de_perfil_TikTok_1.png">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="fontes/trend-slab-four.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="fontes/Helvetica-Bold.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00fcc8;
+            --secondary: #ffbf00;
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full navbar-lorde shadow-lg z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold flex items-center text-primary hover:opacity-80 transition-opacity logo-lorde">
+                    <i class="fas fa-dice-d20 mr-2"></i>
+                    Lorde Tempus
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                    <a href="#sobre" class="nav-link active" data-section="sobre">
+                        <i class="fas fa-book mr-1"></i>Bíblia do Kombo
+                    </a>
+                    <a href="#planos" class="nav-link" data-section="planos">
+                        <i class="fas fa-shopping-cart mr-1"></i>Comprar
+                    </a>
+                    <a href="campanhas.html" class="nav-link">
+                        <i class="fas fa-dungeon mr-1"></i>Campanhas
+                    </a>
+                    <a href="perfil.html" class="nav-link">
+                        <i class="fas fa-user mr-1"></i>Perfil
+                    </a>
+                    
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Abrir menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <a href="index.html" class="text-xl font-bold flex items-center text-primary logo-lorde">
+                        <i class="fas fa-dice-d20 mr-2"></i>
+                        Lorde Tempus
+                    </a>
+                    <button id="closeMobileMenu" class="text-2xl" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mobile-menu-content">
+                    <a href="index.html" class="mobile-nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#sobre" class="mobile-nav-link active" data-section="sobre">
+                        <i class="fas fa-book"></i>
+                        <span>Bíblia do Kombo</span>
+                    </a>
+                    <a href="#planos" class="mobile-nav-link" data-section="planos">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Comprar</span>
+                    </a>
+                    <a href="campanhas.html" class="mobile-nav-link">
+                        <i class="fas fa-dungeon"></i>
+                        <span>Campanhas</span>
+                    </a>
+                    <a href="perfil.html" class="mobile-nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    
+                    <button id="themeToggleMobile" class="mobile-theme-toggle" data-theme-toggle>
+                        <i class="fas fa-moon theme-icon-moon"></i>
+                        <i class="fas fa-sun theme-icon-sun hidden"></i>
+                        <span class="theme-text">Modo Escuro</span>
+                        <span class="theme-indicator">OFF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="sobre" class="hero-section min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <div class="mb-8">
+                    <img src="images/BibliadoKombo/Bíblia do Kombo_edited.jpg" alt="Bíblia do Kombo" class="mx-auto rounded-lg shadow-2xl max-w-md w-full">
+                </div>
+                <h1 class="hero-title mb-6 animate-slideInLeft">
+                    BÍBLIA DO KOMBO<br>
+                    <span style="color: var(--secondary);">O GUIA DEFINITIVO</span>
+                </h1>
+                <p class="hero-subtitle mb-8 animate-slideInRight delay-200">
+                    Um guia completo com 13 livros e mais de 1000 páginas de conteúdo exclusivo sobre RPG
+                </p>
+                <div class="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4 animate-fadeInUp delay-300">
+                    <a href="#planos" class="lorde-btn-large">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Comprar Agora
+                    </a>
+                    <a href="#conteudo" class="accent-btn-large" style="background:var(--secondary);color:#222;">
+                        <i class="fas fa-book mr-2"></i>
+                        Ver Conteúdo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conteúdo Section -->
+    <section id="conteudo" class="section-padding bg-light-surface dark:bg-dark-surface">
+        <div class="container mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <h2 class="section-title animate-fadeInUp">Conteúdo da Bíblia</h2>
+                <p class="section-subtitle animate-fadeInUp delay-200">
+                    A Bíblia do Kombo pretende ser divida em 13 capítulos (aqui chamados de "Livros") cada um abordando um tema importante sobre a filosofia do livro.
+                </p>
+                <div class="mt-8">
+                    <img src="images/BibliadoKombo/Bíblia do Kombo (1).png" alt="Bíblia do Kombo - Detalhes" class="mx-auto rounded-lg shadow-xl max-w-2xl w-full">
+                </div>
+                <div class="flex justify-center my-10">
+                    <a href="#" class="lorde-btn-large" style="background:var(--secondary);color:#222;font-weight:bold;font-size:1.2rem;padding:1rem 2.5rem;border-radius:0.75rem;box-shadow:0 4px 16px rgba(0,0,0,0.10);">
+                        <i class="fas fa-download mr-2"></i> Baixar Prévia
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Livro 1 -->
+                <div class="content-card animate-fadeInUp text-center">
+                    <div class="mb-2"><i class="fas fa-chalkboard-teacher fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 1 - O ENSINAMENTO</h3>
+                    <p>Focado em detalhes sobre algumas boas práticas para ser um bom jogador/narrador. Focadas mais em comportamentos externos ao jogo em si.</p>
+                </div>
+
+                <!-- Livro 2 -->
+                <div class="content-card animate-fadeInUp delay-100 text-center">
+                    <div class="mb-2"><i class="fas fa-cubes fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 2 - O FUNDAMENTO</h3>
+                    <p>O alvo deste momento é passar algumas bases fundamentais para entender as consequências mecânicas compartilhadas por vários jogos.</p>
+                </div>
+
+                <!-- Livro 3 -->
+                <div class="content-card animate-fadeInUp delay-200 text-center">
+                    <div class="mb-2"><i class="fas fa-user-astronaut fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 3 - O PROTAGONISTA</h3>
+                    <p>Talvez a parte mais importante do texto. O foco principal deste capítulo é falar sobre a criação de personagem.</p>
+                </div>
+
+                <!-- Livro 4 -->
+                <div class="content-card animate-fadeInUp delay-300 text-center">
+                    <div class="mb-2"><i class="fas fa-th-large fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 4 - O TABULEIRO</h3>
+                    <p>O enfoque aqui e sobre como utilizar tabuleiros ("grids") ao favor de ajudar a imersão na sua mesa.</p>
+                </div>
+
+                <!-- Livro 5 -->
+                <div class="content-card animate-fadeInUp delay-400 text-center">
+                    <div class="mb-2"><i class="fas fa-skull-crossbones fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 5 - O INIMIGO</h3>
+                    <p>Nesta parte do livro queremos trabalhar os adversários daqueles personagens incríveis.</p>
+                </div>
+
+                <!-- Livro 6 -->
+                <div class="content-card animate-fadeInUp delay-500 text-center">
+                    <div class="mb-2"><i class="fas fa-mountain fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 6 - O CENÁRIO</h3>
+                    <p>Tão importante quando entender quais oponentes nossos heróis terão, é também compreender onde aquelas disputas irão disputar.</p>
+                </div>
+
+                <!-- Livro 7 -->
+                <div class="content-card animate-fadeInUp delay-600 text-center">
+                    <div class="mb-2"><i class="fas fa-chess-king fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 7 - O META</h3>
+                    <p>Focado para jogadores com ambições competitivas, mas também com a intenção de introduzir os mais "casuais".</p>
+                </div>
+
+                <!-- Livros 8-11 -->
+                <div class="content-card animate-fadeInUp delay-700 text-center">
+                    <div class="mb-2"><i class="fas fa-dragon fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVROS 8-11 - SISTEMAS ESPECÍFICOS</h3>
+                    <p>O Dragão / O Anormal / O Atormentado / O Caminho - Conteúdos específicos para se referir a algum dos sistemas mais famosos.</p>
+                </div>
+
+                <!-- Livro 12 -->
+                <div class="content-card animate-fadeInUp delay-800 text-center">
+                    <div class="mb-2"><i class="fas fa-fist-raised fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 12 - A DISPUTA</h3>
+                    <p>Regras para jogar RPG competitivo (PvP & PvE), tanto nas modalidades "Arenas" quanto "Dungeon Run".</p>
+                </div>
+
+                <!-- Livro 13 -->
+                <div class="content-card animate-fadeInUp delay-900 text-center">
+                    <div class="mb-2"><i class="fas fa-hands-helping fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">LIVRO 13 - O AGRADECIMENTO</h3>
+                    <p>Um obrigado da própria LT a toda a sua comunidade.</p>
+                </div>
+
+                <!-- Conteúdo Bônus -->
+                <div class="content-card animate-fadeInUp delay-1000 text-center">
+                    <div class="mb-2"><i class="fas fa-star fa-3x" style="color:var(--secondary)"></i></div>
+                    <h3 class="text-xl font-bold mb-2">CONTEÚDO BÔNUS</h3>
+                    <p>Baralho do Espaço Tempo e 3 capítulos extras surpresas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planos Section -->
+    <section id="planos" class="section-padding bg-light-surface dark:bg-dark-surface">
+        <div class="container mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <h2 class="section-title animate-fadeInUp">Escolha sua Edição</h2>
+                <p class="section-subtitle animate-fadeInUp delay-200">
+                    Selecione a edição que melhor se adequa às suas necessidades
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- PDF -->
+                <div class="plan-card animate-fadeInUp text-center" style="border:2px solid var(--secondary)">
+                    <div class="mb-2"><i class="fas fa-file-pdf fa-3x" style="color:var(--secondary)"></i></div>
+                    <div class="plan-header">
+                        <h3 class="text-2xl font-bold">PDF</h3>
+                        <div class="price" style="color:var(--secondary)">R$99,99</div>
+                    </div>
+                    <ul class="plan-features text-left">
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Nome nos créditos e destaque no Discord</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Acesso antecipado: Wallpapers digitais exclusivos</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF do livro</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF com conteúdo extra (3 capítulos)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Cartas do Deck do Espaço-Tempo em PDF</li>
+                    </ul>
+                    <a href="#" class="plan-button" style="background:var(--secondary);color:#222;">Comprar Agora</a>
+                </div>
+
+                <!-- Físico -->
+                <div class="plan-card animate-fadeInUp delay-200 text-center" style="border:2px solid var(--secondary)">
+                    <div class="mb-2"><i class="fas fa-book fa-3x" style="color:var(--secondary)"></i></div>
+                    <div class="plan-header">
+                        <h3 class="text-2xl font-bold">Físico</h3>
+                        <div class="price" style="color:var(--secondary)">R$249,99</div>
+                    </div>
+                    <ul class="plan-features text-left">
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Nome nos créditos e créditos no Discord</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Acesso antecipado: Wallpapers digitais exclusivos</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF do livro</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro físico (Capa dura / Formato A5)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Cartas do Deck do Espaço-Tempo em PDF</li>
+                    </ul>
+                    <a href="#" class="plan-button" style="background:var(--secondary);color:#222;">Comprar Agora</a>
+                </div>
+
+                <!-- Edição de Luxo -->
+                <div class="plan-card animate-fadeInUp delay-300 text-center" style="border:2px solid var(--secondary)">
+                    <div class="mb-2"><i class="fas fa-gem fa-3x" style="color:var(--secondary)"></i></div>
+                    <div class="plan-header">
+                        <h3 class="text-2xl font-bold">Edição de Luxo</h3>
+                        <div class="price" style="color:var(--secondary)">R$399,99</div>
+                    </div>
+                    <ul class="plan-features text-left">
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Nome nos créditos e créditos no Discord</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Acesso antecipado: Wallpapers digitais exclusivos</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF do livro</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro físico (Capa dura / Formato A5)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Cartas do Deck do Espaço-Tempo em PDF</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro dos Apóstolos: Versão digital</li>
+                    </ul>
+                    <a href="#" class="plan-button" style="background:var(--secondary);color:#222;">Comprar Agora</a>
+                </div>
+
+                <!-- Edição de Luxo + Baralho Físico -->
+                <div class="plan-card animate-fadeInUp delay-400 text-center" style="border:2px solid var(--secondary)">
+                    <div class="mb-2"><i class="fas fa-layer-group fa-3x" style="color:var(--secondary)"></i></div>
+                    <div class="plan-header">
+                        <h3 class="text-2xl font-bold">Edição de Luxo + Baralho Físico</h3>
+                        <div class="price" style="color:var(--secondary)">R$599,99</div>
+                    </div>
+                    <ul class="plan-features text-left">
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Nome nos créditos e créditos no Discord</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Acesso antecipado: Wallpapers digitais exclusivos</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF do livro</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro físico (Capa dura / Formato A5)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Cartas do Baralho do Espaço & Tempo versão física</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro dos Apóstolos: Versão digital</li>
+                    </ul>
+                    <a href="#" class="plan-button" style="background:var(--secondary);color:#222;">Comprar Agora</a>
+                </div>
+
+                <!-- Edição Lorde Tempus -->
+                <div class="plan-card animate-fadeInUp delay-500 text-center" style="border:2px solid var(--secondary)">
+                    <div class="mb-2"><i class="fas fa-crown fa-3x" style="color:var(--secondary)"></i></div>
+                    <div class="plan-header">
+                        <h3 class="text-2xl font-bold">Edição Lorde Tempus</h3>
+                        <div class="price" style="color:var(--secondary)">R$999,99</div>
+                    </div>
+                    <ul class="plan-features text-left">
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Nome nos créditos e créditos no Discord</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Acesso antecipado: Wallpapers digitais exclusivos</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> PDF do livro</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro físico (Capa dura / Formato A5)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Cobertura de um capítulo exclusivo à sua escolha</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Baralho do Espaço & Tempo Físico (exclusivo)</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Treinamento para mestres profissionais da Lorde Tempus</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Livro dos Apóstolos: Versão digital</li>
+                        <li><i class="fas fa-check" style="color:var(--secondary)"></i> Capítulo personalizado à sua escolha</li>
+                    </ul>
+                    <a href="#" class="plan-button" style="background:var(--secondary);color:#222;">Comprar Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-lorde">
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex flex-col items-center justify-center mb-8">
+                <!-- Logo e descrição -->
+                <div class="text-center mb-8">
+                    <div class="footer-brand mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-dice-d20 text-3xl mr-3 text-primary"></i>
+                            <h3 class="text-2xl font-bold logo-lorde">Lorde Tempus</h3>
+                        </div>
+                        <p class="footer-description max-w-md mx-auto">
+                            A principal plataforma de RPG online do Brasil. Conectando aventureiros 
+                            para criar histórias épicas e memoráveis desde 2023.
+                        </p>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="social-links flex justify-center gap-4">
+                        <a href="https://discord.gg/BHgQ2XZ89Y" target="_blank" rel="noopener" 
+                           class="social-link" title="Discord" aria-label="Entrar no Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="YouTube" aria-label="Inscrever-se no YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@lordetempus" target="_blank" rel="noopener" 
+                           class="social-link" title="TikTok" aria-label="Seguir no TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapa do Site -->
+                <div class="footer-section text-center">
+                    <h4 class="footer-title">Mapa do Site</h4>
+                    <ul class="footer-links flex justify-center gap-6">
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#sobre" class="footer-link">Sobre</a></li>
+                        <li><a href="#planos" class="footer-link">Planos</a></li>
+                        <li><a href="campanhas.html" class="footer-link">Campanhas</a></li>
+                        <li><a href="biblia-kombo.html" class="footer-link">Bíblia do Kombo</a></li>
+                        <li><a href="perfil.html" class="footer-link">Perfil</a></li>
+                    </ul>
+                </div>
+                <!-- Copyright -->
+                <div class="footer-bottom mt-8">
+                    <div class="border-t border-opacity-20 pt-8 text-center">
+                        <p class="copyright">
+                            © 2025 Lorde Tempus. Todos os direitos reservados. 
+                            Feito com <i class="fas fa-heart text-red-500 mx-1"></i> para a comunidade RPG.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+        
+    <!-- Scripts -->
+    <script src="js/theme-manager.js"></script>
+    <script src="js/mobile-menu.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
