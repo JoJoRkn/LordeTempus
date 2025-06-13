@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 
-import.meta.env.VITE_FIREBASE_API_KEY
+const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
 
 
 export default defineConfig({
