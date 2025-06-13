@@ -1,5 +1,9 @@
 import { defineConfig } from 'vite'
 
+
+import.meta.env.VITE_FIREBASE_API_KEY
+
+
 export default defineConfig({
   base: '/SiteLordeTempus/', // Base URL para o GitHub Pages
   
