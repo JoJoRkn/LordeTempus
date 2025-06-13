@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Descontos por período
     const discounts = {
         'monthly': 0,
-        'quarterly': 0.15,
-        'semiannual': 0.25,
-        'annual': 0.40
+        'quarterly': 0.10,
+        'semiannual': 0.15,
+        'annual': 0.30
     };
 
     // Função para atualizar os preços

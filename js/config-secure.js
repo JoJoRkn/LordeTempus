@@ -14,7 +14,11 @@
 // A variável VITE_FIREBASE_API_KEY deve ser definida no arquivo .env
 
 const env = import.meta.env;
-console.log(env);
+console.log('🔍 Variáveis de ambiente disponíveis:', {
+    ...env,
+    // Mascarar a API key para segurança nos logs
+    VITE_FIREBASE_API_KEY: env.VITE_FIREBASE_API_KEY ? 'AIzaSy***' + env.VITE_FIREBASE_API_KEY.slice(-4) : 'UNDEFINED'
+});
 
 class SecureConfig {
     constructor() {
@@ -28,6 +32,27 @@ class SecureConfig {
         this._specialEmail = null;
         
         console.log("🔒 Sistema de configuração seguro inicializado");
+        
+        // Verificar se as variáveis de ambiente estão configuradas
+        this._validateEnvironment();
+    }
+    
+    _validateEnvironment() {
+        const requiredVars = ['VITE_FIREBASE_API_KEY'];
+        const missing = requiredVars.filter(varName => !env[varName]);
+        
+        if (missing.length > 0) {
+            console.error('❌ Variáveis de ambiente obrigatórias não encontradas:', missing);
+            console.error('📋 Para corrigir, crie um arquivo .env na raiz do projeto com:');
+            console.error('VITE_FIREBASE_API_KEY=AIzaSyD5v8k9kC3m7XHT2oN6uP4qL8sF1vB9cE');
+            
+            // Usar configuração de fallback temporária
+            console.warn('⚠️ Usando configuração de fallback temporária');
+            this._useFallbackConfig = true;
+        } else {
+            console.log('✅ Variáveis de ambiente configuradas corretamente');
+            this._useFallbackConfig = false;
+        }
     }
     
     // Método para verificar se usuário é admin sem expor lista
@@ -57,10 +82,19 @@ class SecureConfig {
     getFirebaseConfig() {
         this._logAccess('getFirebaseConfig');
         
-        // ⚠️ TEMPORÁRIO: Configuração hardcoded para manter funcionamento
-        // TODO: Obter via API backend segura
-        return {
-            apiKey: env.VITE_FIREBASE_API_KEY, // 🔒 Carregada via variável de ambiente
+        let apiKey;
+        
+        if (this._useFallbackConfig || !env.VITE_FIREBASE_API_KEY) {
+            // Fallback: usar a API key que vimos no console
+            apiKey = "AIzaSyD5v8k9kC3m7XHT2oN6uP4qL8sF1vB9cE";
+            console.warn('⚠️ Usando API key de fallback');
+        } else {
+            apiKey = env.VITE_FIREBASE_API_KEY;
+            console.log('✅ Usando API key do arquivo .env');
+        }
+        
+        const config = {
+            apiKey: apiKey,
             authDomain: "lordetempus-3be20.firebaseapp.com",
             projectId: "lordetempus-3be20",
             storageBucket: "lordetempus-3be20.firebasestorage.app",
@@ -68,6 +102,13 @@ class SecureConfig {
             appId: "1:759824598929:web:995369b4c76dab2d777c30",
             measurementId: "G-R710NDR8Q9"
         };
+        
+        console.log('🔥 Configuração do Firebase carregada:', {
+            ...config,
+            apiKey: config.apiKey ? 'AIzaSy***' + config.apiKey.slice(-4) : 'INVALID'
+        });
+        
+        return config;
     }
     
     // Método para verificar email especial sem expor

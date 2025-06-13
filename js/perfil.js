@@ -3,41 +3,11 @@
 //     Funcionalidades do Perfil        //
 // ===================================== //
 
-// Importações Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { 
-    getAuth, 
-    GoogleAuthProvider, 
-    signInWithPopup, 
-    signOut, 
-    onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    setDoc, 
-    collection, 
-    query, 
-    orderBy, 
-    onSnapshot, 
-    addDoc, 
-    deleteDoc, 
-    getDocs,
-    updateDoc,
-    where
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-// Importar configuração segura
-import { getFirebaseConfig, isAdminEmail, PUBLIC_CONFIG } from './config-secure.js';
-
-// Configuração Firebase (obtida de forma segura)
-const firebaseConfig = getFirebaseConfig();
-
-// Inicialização Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Variáveis globais para Firebase (serão inicializadas dinamicamente)
+let auth = null;
+let db = null;
+let firebaseModules = null;
+let isAdminEmail = null;
 
 // ==================== CONSTANTES ==================== //
 // Configuração de administradores removida por segurança
@@ -153,13 +123,76 @@ let hasPlano = false; // Adicionar variável que estava faltando
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🎭 Inicializando módulo de perfil...');
     
-    inicializarEventListeners();
-    configurarAbas();
-    configurarModais();
-    
-    // Observador de autenticação
-    onAuthStateChanged(auth, handleAuthChange);
+    // Inicializar Firebase primeiro
+    inicializarFirebase().then(() => {
+        inicializarEventListeners();
+        configurarAbas();
+        configurarModais();
+        
+        // Observador de autenticação (só após Firebase estar pronto)
+        if (auth && firebaseModules) {
+            firebaseModules.onAuthStateChanged(auth, handleAuthChange);
+        }
+    }).catch(error => {
+        console.error('❌ Erro ao inicializar Firebase no perfil:', error);
+        showNotification('Erro ao conectar com o servidor. Recarregue a página.', 'error');
+    });
 });
+
+// ==================== INICIALIZAÇÃO DO FIREBASE ==================== //
+async function inicializarFirebase() {
+    try {
+        console.log('🚀 Inicializando Firebase no módulo de perfil...');
+        
+        // Importações dinâmicas do Firebase
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js");
+        const authModules = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js");
+        const firestoreModules = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
+        
+        // Importar configuração segura
+        const configModule = await import('./config-secure.js');
+        const firebaseConfig = configModule.getFirebaseConfig();
+        isAdminEmail = configModule.isAdminEmail;
+        
+        // Validar configuração
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'undefined') {
+            throw new Error('API Key do Firebase não configurada ou inválida');
+        }
+        
+        console.log('🔥 Inicializando aplicação Firebase no perfil...');
+        
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        auth = authModules.getAuth(app);
+        db = firestoreModules.getFirestore(app);
+        
+        // Salvar módulos para uso posterior
+        firebaseModules = {
+            ...authModules,
+            ...firestoreModules
+        };
+        
+        console.log('✅ Firebase inicializado com sucesso no perfil!');
+        
+        return { auth, db, firebaseModules };
+        
+    } catch (error) {
+        console.error('❌ Erro ao inicializar Firebase no perfil:', error);
+        
+        // Tratamento específico de erros
+        let mensagemUsuario = 'Erro ao conectar com o servidor. ';
+        
+        if (error.message.includes('API Key')) {
+            mensagemUsuario += 'Configuração de API inválida. ';
+        } else if (error.code === 'auth/invalid-api-key') {
+            mensagemUsuario += 'Chave de API do Firebase inválida. ';
+        }
+        
+        mensagemUsuario += 'Recarregue a página.';
+        
+        throw new Error(mensagemUsuario);
+    }
+}
 
 // ==================== EVENT LISTENERS ==================== //
 function inicializarEventListeners() {
@@ -192,9 +225,14 @@ function inicializarEventListeners() {
 
 // ==================== AUTENTICAÇÃO ==================== //
 async function signInWithGoogle() {
-    const provider = new GoogleAuthProvider();
+    if (!auth || !firebaseModules) {
+        showNotification('Firebase ainda não foi inicializado. Aguarde...', 'warning');
+        return;
+    }
+    
+    const provider = new firebaseModules.GoogleAuthProvider();
     try {
-        await signInWithPopup(auth, provider);
+        await firebaseModules.signInWithPopup(auth, provider);
         showNotification('Login realizado com sucesso!', 'success');
     } catch (error) {
         console.error('Erro no login:', error);
@@ -203,8 +241,13 @@ async function signInWithGoogle() {
 }
 
 async function signOutUser() {
+    if (!auth || !firebaseModules) {
+        showNotification('Firebase ainda não foi inicializado. Aguarde...', 'warning');
+        return;
+    }
+    
     try {
-        await signOut(auth);
+        await firebaseModules.signOut(auth);
         showNotification('Logout realizado com sucesso!', 'success');
         setTimeout(() => {
             window.location.href = 'index.html';
@@ -297,8 +340,8 @@ async function atualizarDadosUsuario(user) {
         } else {
             // Fallback para método tradicional
             console.log('⚠️ Sistema anti-duplicação não disponível, usando método tradicional');
-            const userRef = doc(db, 'users', user.uid);
-            await setDoc(userRef, {
+            const userRef = firebaseModules.doc(db, 'users', user.uid);
+            await firebaseModules.setDoc(userRef, {
                 uid: user.uid,
                 displayName: user.displayName,
                 email: user.email.toLowerCase(),
@@ -311,8 +354,8 @@ async function atualizarDadosUsuario(user) {
         
         // Fallback final
         try {
-            const userRef = doc(db, 'users', user.uid);
-            await setDoc(userRef, {
+            const userRef = firebaseModules.doc(db, 'users', user.uid);
+            await firebaseModules.setDoc(userRef, {
                 uid: user.uid,
                 displayName: user.displayName,
                 email: user.email.toLowerCase(),
@@ -344,9 +387,9 @@ async function verificarPermissoes(user) {
         // Verificação de permissões realizada com segurança
     
     // Buscar plano do usuário
-    const userRef = doc(db, 'users', user.uid);
+    const userRef = firebaseModules.doc(db, 'users', user.uid);
     try {
-        const userSnap = await getDoc(userRef);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         
         // Para admins, usar o plano real salvo no banco
@@ -489,9 +532,9 @@ function carregarDadosAba(tabName) {
 async function carregarDadosPerfil() {
     if (!currentUser) return;
     
-    const userRef = doc(db, 'users', currentUser.uid);
+    const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
     try {
-        const userSnap = await getDoc(userRef);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         
         // Preencher formulário
@@ -520,7 +563,7 @@ async function salvarPerfil(e) {
         return;
     }
     
-    const userRef = doc(db, 'users', currentUser.uid);
+    const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
     const perfilData = {
         displayName: document.getElementById('accountName').value.trim(),
         discord: document.getElementById('accountDiscord').value.trim(),
@@ -530,7 +573,7 @@ async function salvarPerfil(e) {
     };
     
     try {
-        await setDoc(userRef, perfilData, { merge: true });
+        await firebaseModules.setDoc(userRef, perfilData, { merge: true });
         showPerfilMsg('Perfil salvo com sucesso!', 'success');
         
         // Marcar que salvou dados do perfil
@@ -558,9 +601,9 @@ async function salvarPerfil(e) {
 async function carregarEndereco() {
     if (!currentUser) return;
     
-    const userRef = doc(db, 'users', currentUser.uid);
+    const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
     try {
-        const userSnap = await getDoc(userRef);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         const address = userData.address || {};
         
@@ -589,7 +632,7 @@ async function salvarEndereco(e) {
         return;
     }
     
-    const userRef = doc(db, 'users', currentUser.uid);
+    const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
     const enderecoData = {
         address: {
             street: document.getElementById('addressStreet').value.trim(),
@@ -602,7 +645,7 @@ async function salvarEndereco(e) {
     };
     
     try {
-        await setDoc(userRef, enderecoData, { merge: true });
+        await firebaseModules.setDoc(userRef, enderecoData, { merge: true });
         showNotification('Endereço salvo com sucesso!', 'success');
         
         // Marcar que cadastrou endereço
@@ -870,8 +913,8 @@ async function registrarEvento(eventoNome, valor = true) {
     if (!currentUser) return;
     
     try {
-        const userRef = doc(db, 'users', currentUser.uid);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         
         // Atualizar eventos
@@ -888,7 +931,7 @@ async function registrarEvento(eventoNome, valor = true) {
         }
         
         // Salvar no Firebase - usando apenas campos que o usuário pode alterar
-        await setDoc(userRef, { 
+        await firebaseModules.setDoc(userRef, { 
             eventos,
             eventosAtualizadosEm: new Date()
         }, { merge: true });
@@ -934,8 +977,8 @@ async function carregarMesas() {
     mesasDiv.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400">Carregando suas mesas...</div>';
     
     try {
-        const campanhasRef = collection(db, 'campanhas');
-        const snapshot = await getDocs(campanhasRef);
+        const campanhasRef = firebaseModules.collection(db, 'campanhas');
+        const snapshot = await firebaseModules.getDocs(campanhasRef);
         
         let mesas = [];
         snapshot.forEach(docSnap => {
@@ -1074,8 +1117,8 @@ window.mostrarInfoMesa = async function(mesaId, mesaNome) {
     
     // Buscar dados reais da campanha no Firebase
     try {
-        const campanhaRef = doc(db, 'campanhas', mesaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', mesaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         
         if (!campanhaSnap.exists()) {
             throw new Error('Campanha não encontrada');
@@ -1249,12 +1292,12 @@ async function carregarTrofeusPersonalizados() {
         console.log('🏆 Carregando troféus personalizados...');
         
         // Buscar troféus personalizados do Firebase
-        const trofeusQuery = query(
-            collection(db, 'trofeus_personalizados'),
-            where('ativo', '==', true)
+        const trofeusQuery = firebaseModules.query(
+            firebaseModules.collection(db, 'trofeus_personalizados'),
+            firebaseModules.where('ativo', '==', true)
         );
         
-        const trofeusSnapshot = await getDocs(trofeusQuery);
+        const trofeusSnapshot = await firebaseModules.getDocs(trofeusQuery);
         
         if (!trofeusSnapshot.empty) {
             let trofeusCarregados = 0;
@@ -1302,7 +1345,7 @@ async function carregarTrofeusModificados() {
     try {
         console.log('🔧 Carregando modificações de troféus padrão...');
         
-        const querySnapshot = await getDocs(collection(db, 'trofeus_modificados'));
+        const querySnapshot = await firebaseModules.getDocs(firebaseModules.collection(db, 'trofeus_modificados'));
         const modificacoes = new Map();
         
         querySnapshot.forEach((doc) => {
@@ -1892,8 +1935,8 @@ async function carregarTrofeus() {
         await carregarTrofeusModificados();
         
         // Buscar conquistas do usuário
-        const userRef = doc(db, 'users', currentUser.uid);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         const conquistasUsuario = userData.conquistas || {};
         
@@ -2205,8 +2248,8 @@ async function verificarNovasConquistas(userData) {
         // Salvar conquistas atualizadas no banco
         if (novasConquistas.length > 0) {
             try {
-                const userRef = doc(db, 'users', currentUser.uid);
-                await updateDoc(userRef, {
+                const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
+                await firebaseModules.updateDoc(userRef, {
                     conquistas: conquistasUsuario
                 });
                 
@@ -3075,8 +3118,8 @@ async function criarCampanha(e) {
     };
     
     try {
-        const campanhaRef = doc(collection(db, 'campanhas'));
-        await setDoc(campanhaRef, campanha);
+        const campanhaRef = doc(firebaseModules.collection(db, 'campanhas'));
+        await firebaseModules.setDoc(campanhaRef, campanha);
         
         msgDiv.innerHTML = '<div class="text-green-500">Campanha criada com sucesso!</div>';
         
@@ -3253,8 +3296,8 @@ async function carregarListaCampanhas() {
             listaContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400">Carregando campanhas...</div>';
     
     try {
-        const q = query(collection(db, 'campanhas'), orderBy('criadaEm', 'desc'));
-        const snapshot = await getDocs(q);
+        const q = firebaseModules.query(firebaseModules.collection(db, 'campanhas'), firebaseModules.orderBy('criadaEm', 'desc'));
+        const snapshot = await firebaseModules.getDocs(q);
         
         if (snapshot.empty) {
             listaContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400">Nenhuma campanha cadastrada.</div>';
@@ -3333,7 +3376,7 @@ window.excluirCampanha = async function(campanhaId) {
     if (!confirm('Tem certeza que deseja excluir esta campanha?')) return;
     
     try {
-        await deleteDoc(doc(db, 'campanhas', campanhaId));
+        await firebaseModules.deleteDoc(firebaseModules.doc(db, 'campanhas', campanhaId));
         showNotification('Campanha excluída com sucesso!', 'success');
         carregarListaCampanhas();
     } catch (error) {
@@ -3346,8 +3389,8 @@ window.excluirCampanha = async function(campanhaId) {
 window.editarCampanha = async function(campanhaId) {
     try {
         // Buscar dados da campanha
-        const campanhaRef = doc(db, 'campanhas', campanhaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', campanhaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         
         if (!campanhaSnap.exists()) {
             showNotification('Campanha não encontrada!', 'error');
@@ -3490,8 +3533,8 @@ window.editarCampanha = async function(campanhaId) {
 window.verJogadores = async function(campanhaId) {
     try {
         // Buscar dados da campanha
-        const campanhaRef = doc(db, 'campanhas', campanhaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', campanhaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         
         if (!campanhaSnap.exists()) {
             showNotification('Campanha não encontrada!', 'error');
@@ -3518,8 +3561,8 @@ window.verJogadores = async function(campanhaId) {
                 jogadores.map(async (jogador) => {
                     try {
                         // Buscar dados do usuário no Firestore
-                        const q = query(collection(db, 'users'));
-                        const snap = await getDocs(q);
+                        const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
+                        const snap = await firebaseModules.getDocs(q);
                         let userData = null;
                         
                         snap.forEach(docSnap => {
@@ -3654,8 +3697,8 @@ async function salvarEdicaoCampanha(e, campanhaId) {
     
     try {
         // Primeiro, obter dados atuais da campanha para preservar a imagem existente
-        const campanhaRef = doc(db, 'campanhas', campanhaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', campanhaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         const campanhaAtual = campanhaSnap.data();
         
         // Processar nova imagem se foi selecionada
@@ -3690,7 +3733,7 @@ async function salvarEdicaoCampanha(e, campanhaId) {
         };
         
         // Atualizar no Firestore
-        await setDoc(campanhaRef, campanhaAtualizada, { merge: true });
+        await firebaseModules.setDoc(campanhaRef, campanhaAtualizada, { merge: true });
         
         msgDiv.innerHTML = '<div class="text-green-500 font-semibold">Campanha atualizada com sucesso!</div>';
         
@@ -3722,8 +3765,8 @@ window.fecharModalJogadores = function() {
 // Função para salvar anotação do jogador
 window.salvarAnotacao = async function(campanhaId, jogadorIndex, anotacao) {
     try {
-        const campanhaRef = doc(db, 'campanhas', campanhaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', campanhaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         
         if (!campanhaSnap.exists()) {
             showNotification('Campanha não encontrada!', 'error');
@@ -3738,7 +3781,7 @@ window.salvarAnotacao = async function(campanhaId, jogadorIndex, anotacao) {
             jogadores[jogadorIndex].anotacaoEditadaEm = new Date();
             jogadores[jogadorIndex].anotacaoEditadaPor = currentUser.email;
             
-            await setDoc(campanhaRef, { jogadores }, { merge: true });
+            await firebaseModules.setDoc(campanhaRef, { jogadores }, { merge: true });
             showNotification('Anotação salva com sucesso!', 'success');
         }
         
@@ -3753,8 +3796,8 @@ window.removerJogador = async function(campanhaId, emailJogador) {
     if (!confirm('Tem certeza que deseja remover este jogador da campanha?')) return;
     
     try {
-        const campanhaRef = doc(db, 'campanhas', campanhaId);
-        const campanhaSnap = await getDoc(campanhaRef);
+        const campanhaRef = firebaseModules.doc(db, 'campanhas', campanhaId);
+        const campanhaSnap = await firebaseModules.getDoc(campanhaRef);
         
         if (!campanhaSnap.exists()) {
             showNotification('Campanha não encontrada!', 'error');
@@ -3766,7 +3809,7 @@ window.removerJogador = async function(campanhaId, emailJogador) {
             jogador => jogador.email.toLowerCase() !== emailJogador.toLowerCase()
         );
         
-        await setDoc(campanhaRef, { jogadores }, { merge: true });
+        await firebaseModules.setDoc(campanhaRef, { jogadores }, { merge: true });
         showNotification('Jogador removido com sucesso!', 'success');
         
         // Recarregar modal de jogadores
@@ -3933,8 +3976,8 @@ async function buscarCliente() {
     resultadoDiv.innerHTML = '<div class="text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Buscando...</div>';
     
     try {
-        const q = query(collection(db, 'users'));
-        const snapshot = await getDocs(q);
+        const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
+        const snapshot = await firebaseModules.getDocs(q);
         
         let usuariosEncontrados = [];
         snapshot.forEach(docSnap => {
@@ -3971,8 +4014,8 @@ async function carregarTodosUsuarios() {
     listaDiv.innerHTML = '<div class="text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Carregando todos os usuários...</div>';
     
     try {
-        const q = query(collection(db, 'users'));
-        const snapshot = await getDocs(q);
+        const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
+        const snapshot = await firebaseModules.getDocs(q);
         
         let usuarios = [];
         snapshot.forEach(docSnap => {
@@ -4115,8 +4158,8 @@ async function exportarContatosCSV() {
     
     try {
         // Buscar todos os usuários
-        const q = query(collection(db, 'users'));
-        const snapshot = await getDocs(q);
+        const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
+        const snapshot = await firebaseModules.getDocs(q);
         
         const usuarios = [];
         snapshot.forEach(docSnap => {
@@ -4656,11 +4699,11 @@ async function importarContatosCSV() {
             const emails = batch.map(c => c.email);
             
             try {
-                const userQuery = query(
-                    collection(db, 'users'), 
-                    where('email', 'in', emails)
+                const userQuery = firebaseModules.query(
+                    firebaseModules.collection(db, 'users'), 
+                    firebaseModules.where('email', 'in', emails)
                 );
-                const userSnapshot = await getDocs(userQuery);
+                const userSnapshot = await firebaseModules.getDocs(userQuery);
                 
                 userSnapshot.forEach(doc => {
                     emailsExistentes.add(doc.data().email);
@@ -4732,7 +4775,7 @@ async function importarContatosCSV() {
                 console.log('🆕 Criando novo usuário:', novoUsuario);
                 
                 try {
-                    const docRef = await addDoc(collection(db, 'users'), novoUsuario);
+                    const docRef = await firebaseModules.addDoc(firebaseModules.collection(db, 'users'), novoUsuario);
                     console.log('✅ Usuário criado com ID:', docRef.id);
                     
                     // Adicionar ao cache de emails existentes para evitar duplicação na mesma sessão
@@ -4840,8 +4883,8 @@ function obterNomePlanoAdmin(plano) {
 // Função para editar usuário
 window.editarUsuario = async function(userId) {
     try {
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', userId);
+        const userSnap = await firebaseModules.getDoc(userRef);
         
         if (!userSnap.exists()) {
             showNotification('Usuário não encontrado!', 'error');
@@ -5004,8 +5047,8 @@ async function salvarEdicaoUsuario(e, userId) {
             editadoPor: currentUser.email
         };
         
-        const userRef = doc(db, 'users', userId);
-        await setDoc(userRef, dadosAtualizados, { merge: true });
+        const userRef = firebaseModules.doc(db, 'users', userId);
+        await firebaseModules.setDoc(userRef, dadosAtualizados, { merge: true });
         
         // Sincronizar plano se foi alterado
         sincronizarPlanoComCampanhas(dadosAtualizados.email || currentUser.email, dadosAtualizados.plano);
@@ -5039,8 +5082,8 @@ window.fecharModalEditarUsuario = function() {
 // Função para gerenciar conquistas do usuário
 window.gerenciarConquistas = async function(userId) {
     try {
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', userId);
+        const userSnap = await firebaseModules.getDoc(userRef);
         
         if (!userSnap.exists()) {
             showNotification('Usuário não encontrado!', 'error');
@@ -5142,9 +5185,9 @@ window.salvarConquistasUsuario = async function(userId) {
             }
         });
         
-        const userRef = doc(db, 'users', userId);
+        const userRef = firebaseModules.doc(db, 'users', userId);
         // Usar setDoc com merge já que é admin alterando conquistas
-        await setDoc(userRef, {
+        await firebaseModules.setDoc(userRef, {
             conquistas: novasConquistas,
             conquistasEditadasEm: new Date(),
             conquistasEditadasPor: currentUser.email
@@ -5174,8 +5217,8 @@ window.fecharModalConquistas = function() {
 // Função para alterar plano do usuário (modal rápido)
 window.alterarPlanoUsuario = async function(userId) {
     try {
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', userId);
+        const userSnap = await firebaseModules.getDoc(userRef);
         
         if (!userSnap.exists()) {
             showNotification('Usuário não encontrado!', 'error');
@@ -5192,7 +5235,7 @@ window.alterarPlanoUsuario = async function(userId) {
         const planoFinal = novoPlano.trim() || 'gratis';
         
         // Atualizar plano no documento do usuário
-        await setDoc(userRef, {
+        await firebaseModules.setDoc(userRef, {
             plano: planoFinal,
             planoAlteradoEm: new Date(),
             planoAlteradoPor: currentUser.email
@@ -5282,8 +5325,8 @@ async function sincronizarPlanoComCampanhas(email, novoPlano) {
     
     try {
         // Buscar todas as campanhas
-        const campanhasRef = collection(db, 'campanhas');
-        const snapshot = await getDocs(campanhasRef);
+        const campanhasRef = firebaseModules.collection(db, 'campanhas');
+        const snapshot = await firebaseModules.getDocs(campanhasRef);
         
         // Para cada campanha, atualizar o plano do jogador correspondente
         const updates = [];
@@ -5300,8 +5343,8 @@ async function sincronizarPlanoComCampanhas(email, novoPlano) {
             }
             
             if (alterou) {
-                const campanhaRef = doc(db, 'campanhas', docSnap.id);
-                updates.push(setDoc(campanhaRef, { jogadores }, { merge: true }));
+                const campanhaRef = firebaseModules.doc(db, 'campanhas', docSnap.id);
+                updates.push(firebaseModules.setDoc(campanhaRef, { jogadores }, { merge: true }));
             }
         });
         
@@ -5542,8 +5585,8 @@ async function carregarMensagensExistentes() {
             console.log('📝 Tentando carregar mensagens com queries simples...');
             
             // Abordagem simplificada: buscar todas as mensagens e filtrar
-            const qTodasMensagens = collection(db, 'messages');
-            const snapshot = await getDocs(qTodasMensagens);
+            const qTodasMensagens = firebaseModules.collection(db, 'messages');
+            const snapshot = await firebaseModules.getDocs(qTodasMensagens);
             
             snapshot.forEach(docSnap => {
                 const msg = docSnap.data();
@@ -5562,23 +5605,23 @@ async function carregarMensagensExistentes() {
                 console.log('⚠️ Tentando queries específicas...');
                 
                 // Query 1: Mensagens enviadas pelo usuário
-                const qEnviadas = query(
-                    collection(db, 'messages'),
-                    where('from', '==', currentUser.email)
+                const qEnviadas = firebaseModules.query(
+                    firebaseModules.collection(db, 'messages'),
+                    firebaseModules.where('from', '==', currentUser.email)
                 );
                 
-                const snapshotEnviadas = await getDocs(qEnviadas);
+                const snapshotEnviadas = await firebaseModules.getDocs(qEnviadas);
                 snapshotEnviadas.forEach(docSnap => {
                     mensagens.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
                 // Query 2: Mensagens recebidas pelo usuário
-                const qRecebidas = query(
-                    collection(db, 'messages'),
-                    where('to', '==', currentUser.email)
+                const qRecebidas = firebaseModules.query(
+                    firebaseModules.collection(db, 'messages'),
+                    firebaseModules.where('to', '==', currentUser.email)
                 );
                 
-                const snapshotRecebidas = await getDocs(qRecebidas);
+                const snapshotRecebidas = await firebaseModules.getDocs(qRecebidas);
                 snapshotRecebidas.forEach(docSnap => {
                     const msgData = docSnap.data();
                     // Evitar duplicatas
@@ -5686,13 +5729,13 @@ function configurarListenerTempoReal() {
     
     try {
         // Criar query simples para mensagens recebidas pelo usuário (sem orderBy para evitar problemas de índice)
-        const qRecebidas = query(
-            collection(db, 'messages'),
-            where('to', '==', currentUser.email)
+        const qRecebidas = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where('to', '==', currentUser.email)
         );
         
         // Configurar listener em tempo real
-        mensagensListener = onSnapshot(qRecebidas, 
+        mensagensListener = firebaseModules.onSnapshot(qRecebidas, 
             (snapshot) => {
                 console.log('📨 Listener de mensagens ativado');
                 
@@ -5731,7 +5774,7 @@ function configurarListenerTempoReal() {
                 
                 // Fallback: listener mais simples
                 try {
-                    mensagensListener = onSnapshot(collection(db, 'messages'), 
+                    mensagensListener = firebaseModules.onSnapshot(firebaseModules.collection(db, 'messages'), 
                         (snapshot) => {
                             snapshot.docChanges().forEach((change) => {
                                 if (change.type === 'added') {
@@ -5818,8 +5861,8 @@ async function enviarMensagem() {
         const conversaId = gerarIdConversa(currentUser.uid);
         
         // Verificar dados do usuário
-        const userRef = doc(db, 'users', currentUser.uid);
-        const userSnap = await getDoc(userRef);
+        const userRef = firebaseModules.doc(db, 'users', currentUser.uid);
+        const userSnap = await firebaseModules.getDoc(userRef);
         const userData = userSnap.exists() ? userSnap.data() : {};
         
         // === CRIAÇÃO DA MENSAGEM ===
@@ -5889,10 +5932,10 @@ console.log('✅ Validação do destinatário passou');
         
         // === SALVAR NO FIREBASE PRIMEIRO ===
         console.log('💾 Salvando mensagem no Firebase...');
-        const docRef = await addDoc(collection(db, 'messages'), mensagem);
+        const docRef = await firebaseModules.addDoc(firebaseModules.collection(db, 'messages'), mensagem);
         
         // Atualizar com ID do documento
-        await updateDoc(docRef, {
+        await firebaseModules.updateDoc(docRef, {
             messageId: docRef.id,
             criadaComSucesso: true,
             timestampFinal: new Date()
@@ -6139,7 +6182,7 @@ async function criarNotificacaoParaAdmins(mensagem) {
             };
             
             // Salvar notificação no Firestore
-            return addDoc(collection(db, 'notifications'), notificacao);
+            return firebaseModules.addDoc(firebaseModules.collection(db, 'notifications'), notificacao);
         });
         
         // Aguardar todas as notificações serem criadas
@@ -6225,13 +6268,13 @@ async function buscarEExibirMensagensAdmin() {
         // Buscar todas as mensagens direcionadas aos administradores
         // Em ambiente real, isso seria determinado pelo servidor de forma segura
         const adminEmails = ["suporte@lordetempus.com"]; // Email genérico de suporte
-        const q = query(
-            collection(db, 'messages'),
-            where('to', 'in', adminEmails),
-            orderBy('criadaEm', 'desc')
+        const q = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where('to', 'in', adminEmails),
+            firebaseModules.orderBy('criadaEm', 'desc')
         );
         
-        const snapshot = await getDocs(q);
+        const snapshot = await firebaseModules.getDocs(q);
         const mensagens = [];
         
         snapshot.forEach(docSnap => {
@@ -6478,10 +6521,10 @@ window.responderRapido = async function(mensagemId, userEmail) {
             adminNome: currentUser.displayName || 'Admin'
         };
         
-        await addDoc(collection(db, 'messages'), respostaMensagem);
+        await firebaseModules.addDoc(firebaseModules.collection(db, 'messages'), respostaMensagem);
         
         // Marcar mensagem original como respondida
-        await updateDoc(doc(db, 'messages', mensagemId), {
+        await firebaseModules.updateDoc(firebaseModules.doc(db, 'messages', mensagemId), {
             status: 'respondida',
             respondida: true,
             respondidaEm: new Date(),
@@ -6499,7 +6542,7 @@ window.responderRapido = async function(mensagemId, userEmail) {
 
 window.marcarComoLida = async function(mensagemId) {
     try {
-        await updateDoc(doc(db, 'messages', mensagemId), {
+        await firebaseModules.updateDoc(firebaseModules.doc(db, 'messages', mensagemId), {
             lida: true,
             lidaEm: new Date(),
             lidaPor: currentUser.email
@@ -6525,18 +6568,18 @@ async function marcarTodasMensagensComoLidas() {
     try {
         // Em ambiente real, isso seria determinado pelo servidor de forma segura
         const adminEmails = ["suporte@lordetempus.com"]; // Email genérico de suporte
-        const q = query(
-            collection(db, 'messages'),
-            where('to', 'in', adminEmails),
-            where('lida', '==', false)
+        const q = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where('to', 'in', adminEmails),
+            firebaseModules.where('lida', '==', false)
         );
         
-        const snapshot = await getDocs(q);
+        const snapshot = await firebaseModules.getDocs(q);
         const batch = [];
         
         snapshot.forEach(docSnap => {
             batch.push(
-                updateDoc(doc(db, 'messages', docSnap.id), {
+                firebaseModules.updateDoc(firebaseModules.doc(db, 'messages', docSnap.id), {
                     lida: true,
                     lidaEm: new Date(),
                     lidaPor: currentUser.email
@@ -6603,13 +6646,13 @@ async function filtrarMensagensParaCliente(clienteEmail, clienteNome) {
     
     try {
         // Buscar mensagens específicas do cliente
-        const q = query(
-            collection(db, 'messages'),
-            where('from', '==', clienteEmail),
-            orderBy('criadaEm', 'desc')
+        const q = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where('from', '==', clienteEmail),
+            firebaseModules.orderBy('criadaEm', 'desc')
         );
         
-        const snapshot = await getDocs(q);
+        const snapshot = await firebaseModules.getDocs(q);
         const mensagensCliente = [];
         
         snapshot.forEach(docSnap => {
@@ -6885,12 +6928,12 @@ async function carregarHistoricoChatCliente(clienteEmail, clienteNome) {
 // Buscar mensagens específicas do cliente
 async function buscarMensagensCliente(clienteEmail, campo) {
     try {
-        const q = query(
-            collection(db, 'messages'),
-            where(campo, '==', clienteEmail)
+        const q = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where(campo, '==', clienteEmail)
         );
         
-        const snapshot = await getDocs(q);
+        const snapshot = await firebaseModules.getDocs(q);
         const mensagens = [];
         
         snapshot.forEach(docSnap => {
@@ -7051,7 +7094,7 @@ async function enviarMensagemChatCliente(clienteEmail, clienteNome, mensagem) {
             userPhoto: currentUser.photoURL
         };
         
-        await addDoc(collection(db, 'messages'), respostaMensagem);
+        await firebaseModules.addDoc(firebaseModules.collection(db, 'messages'), respostaMensagem);
         
         // Limpar input
         input.value = '';
@@ -7135,18 +7178,18 @@ window.marcarTodasLidasCliente = async function(clienteEmail) {
     if (!confirm('Marcar todas as mensagens deste cliente como lidas?')) return;
     
     try {
-        const q = query(
-            collection(db, 'messages'),
-            where('from', '==', clienteEmail),
-            where('lida', '==', false)
+        const q = firebaseModules.query(
+            firebaseModules.collection(db, 'messages'),
+            firebaseModules.where('from', '==', clienteEmail),
+            firebaseModules.where('lida', '==', false)
         );
         
-        const snapshot = await getDocs(q);
+        const snapshot = await firebaseModules.getDocs(q);
         const updates = [];
         
         snapshot.forEach(docSnap => {
             updates.push(
-                updateDoc(doc(db, 'messages', docSnap.id), {
+                firebaseModules.updateDoc(firebaseModules.doc(db, 'messages', docSnap.id), {
                     lida: true,
                     lidaEm: new Date(),
                     lidaPor: currentUser.email
@@ -7196,11 +7239,11 @@ window.responderRapido = async function(mensagemId, userEmail, mensagemCustomiza
                 userPhoto: currentUser.photoURL
             };
             
-            await addDoc(collection(db, 'messages'), respostaMensagem);
+            await firebaseModules.addDoc(firebaseModules.collection(db, 'messages'), respostaMensagem);
             
             // Marcar mensagem original como respondida (se existe)
             if (mensagemId) {
-                await updateDoc(doc(db, 'messages', mensagemId), {
+                await firebaseModules.updateDoc(firebaseModules.doc(db, 'messages', mensagemId), {
                     status: 'respondida',
                     respondida: true,
                     respondidaEm: new Date(),
@@ -7723,7 +7766,7 @@ window.salvarNovoTrofeu = async function(event) {
         };
         
         // Salvar no Firebase
-        await addDoc(collection(db, 'trofeus_personalizados'), novoTrofeu);
+        await firebaseModules.addDoc(firebaseModules.collection(db, 'trofeus_personalizados'), novoTrofeu);
         
         // Adicionar ao array local de conquistas (para uso imediato)
         CONQUISTAS_DISPONIVEIS.push(novoTrofeu);
@@ -8232,18 +8275,18 @@ window.salvarEdicaoTrofeu = async function(event, trofeuId) {
         
         if (trofeuOriginal?.personalizado) {
             // Troféu personalizado - atualizar na coleção trofeus_personalizados
-            const trofeuQuery = query(
-                collection(db, 'trofeus_personalizados'),
-                where('id', '==', trofeuId)
+            const trofeuQuery = firebaseModules.query(
+                firebaseModules.collection(db, 'trofeus_personalizados'),
+                firebaseModules.where('id', '==', trofeuId)
             );
-            const querySnapshot = await getDocs(trofeuQuery);
+            const querySnapshot = await firebaseModules.getDocs(trofeuQuery);
             
             if (querySnapshot.empty) {
                 throw new Error('Troféu personalizado não encontrado no banco de dados!');
             }
             
             const trofeuDoc = querySnapshot.docs[0];
-            await updateDoc(trofeuDoc.ref, dadosAtualizados);
+            await firebaseModules.updateDoc(trofeuDoc.ref, dadosAtualizados);
             
         } else {
             // Troféu padrão - salvar modificação na coleção trofeus_modificados
@@ -8257,19 +8300,19 @@ window.salvarEdicaoTrofeu = async function(event, trofeuId) {
             };
             
             // Verificar se já existe uma modificação para este troféu
-            const modificacaoQuery = query(
-                collection(db, 'trofeus_modificados'),
-                where('trofeuOriginalId', '==', trofeuId)
+            const modificacaoQuery = firebaseModules.query(
+                firebaseModules.collection(db, 'trofeus_modificados'),
+                firebaseModules.where('trofeuOriginalId', '==', trofeuId)
             );
-            const modificacaoSnapshot = await getDocs(modificacaoQuery);
+            const modificacaoSnapshot = await firebaseModules.getDocs(modificacaoQuery);
             
             if (modificacaoSnapshot.empty) {
                 // Criar nova modificação
-                await addDoc(collection(db, 'trofeus_modificados'), trofeuModificado);
+                await firebaseModules.addDoc(firebaseModules.collection(db, 'trofeus_modificados'), trofeuModificado);
             } else {
                 // Atualizar modificação existente
                 const modificacaoDoc = modificacaoSnapshot.docs[0];
-                await updateDoc(modificacaoDoc.ref, trofeuModificado);
+                await firebaseModules.updateDoc(modificacaoDoc.ref, trofeuModificado);
             }
         }
         
@@ -8413,15 +8456,15 @@ window.excluirTrofeu = async function(trofeuId) {
         
         if (trofeuOriginal.personalizado) {
             // Troféu personalizado - excluir da coleção trofeus_personalizados
-            const trofeuQuery = query(
-                collection(db, 'trofeus_personalizados'),
-                where('id', '==', trofeuId)
+            const trofeuQuery = firebaseModules.query(
+                firebaseModules.collection(db, 'trofeus_personalizados'),
+                firebaseModules.where('id', '==', trofeuId)
             );
-            const querySnapshot = await getDocs(trofeuQuery);
+            const querySnapshot = await firebaseModules.getDocs(trofeuQuery);
             
             if (!querySnapshot.empty) {
                 const trofeuDoc = querySnapshot.docs[0];
-                await deleteDoc(trofeuDoc.ref);
+                await firebaseModules.deleteDoc(trofeuDoc.ref);
             }
             
             // Remover do array local
@@ -8443,19 +8486,19 @@ window.excluirTrofeu = async function(trofeuId) {
             };
             
             // Verificar se já existe uma modificação para este troféu
-            const modificacaoQuery = query(
-                collection(db, 'trofeus_modificados'),
-                where('trofeuOriginalId', '==', trofeuId)
+            const modificacaoQuery = firebaseModules.query(
+                firebaseModules.collection(db, 'trofeus_modificados'),
+                firebaseModules.where('trofeuOriginalId', '==', trofeuId)
             );
-            const modificacaoSnapshot = await getDocs(modificacaoQuery);
+            const modificacaoSnapshot = await firebaseModules.getDocs(modificacaoQuery);
             
             if (modificacaoSnapshot.empty) {
                 // Criar nova modificação de exclusão
-                await addDoc(collection(db, 'trofeus_modificados'), trofeuExcluido);
+                await firebaseModules.addDoc(firebaseModules.collection(db, 'trofeus_modificados'), trofeuExcluido);
             } else {
                 // Atualizar modificação existente para marcar como excluído
                 const modificacaoDoc = modificacaoSnapshot.docs[0];
-                await updateDoc(modificacaoDoc.ref, trofeuExcluido);
+                await firebaseModules.updateDoc(modificacaoDoc.ref, trofeuExcluido);
             }
             
             // Remover do array local (interface)
@@ -8504,8 +8547,8 @@ async function detectarELimparDuplicados() {
         console.log('🔍 Iniciando detecção de usuários duplicados...');
         
         // Buscar todos os usuários
-        const q = query(collection(db, 'users'));
-        const snapshot = await getDocs(q);
+        const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
+        const snapshot = await firebaseModules.getDocs(q);
         
         const usuarios = [];
         snapshot.forEach(docSnap => {
@@ -8575,7 +8618,7 @@ async function detectarELimparDuplicados() {
                     totalContasDeletadas += resultado.contasDeletadas;
                     
                     // Sincronizar plano com campanhas após mesclagem
-                    const contaPrincipalData = await getDoc(doc(db, 'users', resultado.contaPrincipal));
+                    const contaPrincipalData = await firebaseModules.getDoc(firebaseModules.doc(db, 'users', resultado.contaPrincipal));
                     if (contaPrincipalData.exists()) {
                         const planoFinal = contaPrincipalData.data().plano || 'gratis';
                         await sincronizarPlanoComCampanhas(email, planoFinal);
@@ -8666,11 +8709,11 @@ async function detectarELimparDuplicados() {
                     });
                     
                     // Atualizar conta principal
-                    await setDoc(doc(db, 'users', contaPrincipal.id), dadosMesclados, { merge: true });
+                    await firebaseModules.setDoc(firebaseModules.doc(db, 'users', contaPrincipal.id), dadosMesclados, { merge: true });
                     
                     // Deletar contas duplicadas
                     for (const conta of contasParaDeletar) {
-                        await deleteDoc(doc(db, 'users', conta.id));
+                        await firebaseModules.deleteDoc(firebaseModules.doc(db, 'users', conta.id));
                         console.log(`🗑️ Conta deletada: ${conta.id}`);
                     }
                     

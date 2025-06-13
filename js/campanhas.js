@@ -149,7 +149,10 @@ function inicializarElementos() {
 
 async function inicializarFirebase() {
     try {
+        console.log('🚀 Iniciando processo de inicialização do Firebase...');
+        
         // Importações Firebase
+        console.log('📦 Carregando módulos do Firebase...');
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js");
         const { 
             getFirestore, 
@@ -162,16 +165,25 @@ async function inicializarFirebase() {
             setDoc 
         } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
         const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js");
+        console.log('✅ Módulos do Firebase carregados com sucesso');
 
         // Importar configuração segura do Firebase
+        console.log('🔒 Carregando configuração segura...');
         const { getFirebaseConfig, isAdminEmail, isSpecialEmail } = await import('./config-secure.js');
         const firebaseConfig = getFirebaseConfig();
-
+        
+        // Validar configuração antes de inicializar
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'undefined') {
+            throw new Error('API Key do Firebase não configurada ou inválida');
+        }
+        
+        console.log('🔧 Inicializando aplicação Firebase...');
         // Inicialização Firebase
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
         
+        console.log('💾 Configurando módulos globais...');
         // Salvar módulos globalmente para uso posterior
         window.firestoreModules = { 
             collection, query, orderBy, onSnapshot, doc, getDoc, setDoc 
@@ -180,13 +192,22 @@ async function inicializarFirebase() {
         // Salvar funções seguras globalmente para uso posterior
         window.secureConfigFunctions = { isAdminEmail, isSpecialEmail };
         
-        console.log('🔥 Firebase inicializado com sucesso');
+        console.log('🔥 Firebase inicializado com sucesso!');
+        console.log('📋 Estado da aplicação:', {
+            app: !!app,
+            db: !!db,
+            auth: !!auth,
+            firestoreModules: !!window.firestoreModules,
+            secureConfigFunctions: !!window.secureConfigFunctions
+        });
         
         // Configurar autenticação
+        console.log('👤 Configurando monitoramento de autenticação...');
         onAuthStateChanged(auth, handleAuthChange);
         
         // Carregar campanhas imediatamente, independente da autenticação
         // Com um delay menor para garantir que seja executado primeiro
+        console.log('⏰ Agendando carregamento de campanhas...');
         setTimeout(() => {
             carregarCampanhas();
         }, 100);
@@ -201,8 +222,37 @@ async function inicializarFirebase() {
         
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);
+        console.error('🔍 Detalhes do erro:', {
+            message: error.message,
+            code: error.code,
+            stack: error.stack
+        });
+        
+        // Tratar diferentes tipos de erro
+        let mensagemUsuario = 'Erro ao conectar com o servidor. ';
+        
+        if (error.message.includes('API Key')) {
+            mensagemUsuario += 'Configuração de API inválida. ';
+            console.error('🔑 SOLUÇÃO: Verifique se o arquivo .env existe e contém VITE_FIREBASE_API_KEY');
+        } else if (error.code === 'auth/invalid-api-key') {
+            mensagemUsuario += 'Chave de API do Firebase inválida. ';
+            console.error('🔑 SOLUÇÃO: Verifique a API key no arquivo .env');
+        } else if (error.message.includes('network')) {
+            mensagemUsuario += 'Problemas de rede. ';
+        }
+        
+        mensagemUsuario += 'Recarregue a página.';
+        
         mostrarLoading(false);
-        mostrarEmptyState(true, 'Erro ao conectar com o servidor. Recarregue a página.');
+        mostrarEmptyState(true, mensagemUsuario);
+        
+        // Mostrar notificação adicional para desenvolvedores
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.error('🛠️ MODO DESENVOLVIMENTO: Verifique o console para mais detalhes');
+            if (typeof showNotification === 'function') {
+                showNotification('Erro de configuração do Firebase. Verifique o console.', 'error');
+            }
+        }
     }
 }
 
