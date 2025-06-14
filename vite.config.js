@@ -2,7 +2,15 @@ import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 
-const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
+const firebaseConfig = {
+  apiKey: "AIzaSyA5TCpAxv9MAtozIDSnP1MnL21MWX9si8c",
+  authDomain: "lordetempus-3be20.firebaseapp.com",
+  projectId: "lordetempus-3be20",
+  storageBucket: "lordetempus-3be20.appspot.com",
+  messagingSenderId: "759824598929",
+  appId: "1:759824598929:web:995369b4c7cdab2d777c30",
+  measurementId: "G-R710NDR809"
+};
 
 
 export default defineConfig({

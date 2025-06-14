@@ -9,110 +9,96 @@
 // 2. Acessadas via API autenticada
 // 3. Nunca expostas no código frontend
 
-// 🔒 SEGURANÇA: As chaves do Firebase são carregadas via variáveis de ambiente
-// Elas devem ser definidas no arquivo .env e nunca logadas no console
-
-const env = import.meta.env;
+// 🔒 SEGURANÇA: As chaves do Firebase são configuradas diretamente
+// A chave de API do Firebase pode ser exposta no frontend pois não é secreta
 
 class SecureConfig {
     constructor() {
         this._isSecure = true;
         this._accessLog = [];
-        this._useFallbackConfig = false;
-        this._validateEnvironment();
-    }
-
-    _validateEnvironment() {
-        const requiredVars = [
-            'VITE_FIREBASE_API_KEY',
-            'VITE_FIREBASE_AUTH_DOMAIN',
-            'VITE_FIREBASE_PROJECT_ID',
-            'VITE_FIREBASE_STORAGE_BUCKET',
-            'VITE_FIREBASE_MESSAGING_SENDER_ID',
-            'VITE_FIREBASE_APP_ID',
-            'VITE_FIREBASE_MEASUREMENT_ID'
-        ];
-        const missing = requiredVars.filter(varName => !env[varName]);
-        if (missing.length > 0) {
-            // Nunca logar valores, apenas avisar o nome das variáveis faltantes
-            console.warn('⚠️ Variáveis de ambiente obrigatórias não encontradas:', missing);
-            this._useFallbackConfig = true;
-        } else {
-            this._useFallbackConfig = false;
-        }
     }
 
     // Método para obter configuração do Firebase
     getFirebaseConfig() {
-        if (this._useFallbackConfig) {
-            throw new Error('Variáveis de ambiente do Firebase não configuradas corretamente.');
-        }
         return {
-            apiKey: env.VITE_FIREBASE_API_KEY,
-            authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
-            projectId: env.VITE_FIREBASE_PROJECT_ID,
-            storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-            appId: env.VITE_FIREBASE_APP_ID,
-            measurementId: env.VITE_FIREBASE_MEASUREMENT_ID
+            apiKey: "AIzaSyA5TCpAxv9MAtozIDSnP1MnL21MWX9si8c",
+            authDomain: "lordetempus-3be20.firebaseapp.com",
+            projectId: "lordetempus-3be20",
+            storageBucket: "lordetempus-3be20.appspot.com",
+            messagingSenderId: "759824598929",
+            appId: "1:759824598929:web:995369b4c7cdab2d777c30",
+            measurementId: "G-R710NDR809"
         };
     }
 
-    // Método para verificar se usuário é admin sem expor lista
+    // Verificação de emails administrativos
     isAdminEmail(email) {
         if (!email) return false;
-        this._logAccess('isAdminEmail', email);
-        const normalizedEmail = email.toLowerCase().trim();
-        // ⚠️ TEMPORÁRIO: Lista hardcoded para manter funcionamento
-        // TODO: Mover para API backend segura
         const adminEmails = [
             "raiokan3223br@gmail.com",
-            "alef.midrei@gmail.com",
+            "alef.midrei@gmail.com", 
             "guigaxpxp@gmail.com",
             "suporte@lordetempus.com"
         ];
-        return adminEmails.some(adminEmail =>
-            adminEmail.toLowerCase().trim() === normalizedEmail
-        );
+        return adminEmails.includes(email.toLowerCase());
     }
 
-    // Método para verificar email especial sem expor
+    // Verificação de email especial
     isSpecialEmail(email) {
         if (!email) return false;
-        this._logAccess('isSpecialEmail', email);
-        const normalizedEmail = email.toLowerCase().trim();
-        // ⚠️ TEMPORÁRIO: Email hardcoded para manter funcionamento
-        // TODO: Mover para API backend segura
-        const specialEmail = "baneagorarito@gmail.com";
-        return normalizedEmail === specialEmail.toLowerCase().trim();
+        return email.toLowerCase() === "baneagorarito@gmail.com";
     }
 
-    // Método para log de acessos (auditoria)
-    _logAccess(method, data = null) {
-        const logEntry = {
-            timestamp: new Date().toISOString(),
-            method,
-            data: data ? '[PROTEGIDO]' : null,
-            stack: new Error().stack.split('\n')[2]?.trim()
-        };
-        this._accessLog.push(logEntry);
-        if (this._accessLog.length > 100) {
-            this._accessLog = this._accessLog.slice(-100);
-        }
-        // Em desenvolvimento, log no console (sem dados sensíveis)
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            console.log('🔍 Acesso à configuração:', method);
-        }
-    }
-
-    getAccessStats() {
+    // Método para obter configurações de pagamento (placeholder)
+    getPaymentConfig() {
         return {
-            totalAccesses: this._accessLog.length,
-            lastAccess: this._accessLog[this._accessLog.length - 1]?.timestamp,
-            uniqueMethods: [...new Set(this._accessLog.map(log => log.method))]
+            mercadoPago: {
+                publicKey: "TEST-your-public-key-here",
+                accessToken: "TEST-your-access-token-here"
+            },
+            stripe: {
+                publicKey: "pk_test_your-stripe-public-key-here"
+            }
         };
+    }
+
+    // Método para obter configurações de email (placeholder)
+    getEmailConfig() {
+        return {
+            emailJS: {
+                serviceId: "your-emailjs-service-id",
+                templateId: "your-emailjs-template-id",
+                publicKey: "your-emailjs-public-key"
+            }
+        };
+    }
+
+    // Método para obter configurações de analytics (placeholder)
+    getAnalyticsConfig() {
+        return {
+            googleAnalytics: {
+                measurementId: "G-R710NDR809"
+            }
+        };
+    }
+
+    // Método para verificar se está em modo de desenvolvimento
+    isDevelopment() {
+        return window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1' ||
+               window.location.hostname.includes('github.io');
+    }
+
+    // Método para obter URL base da API
+    getApiBaseUrl() {
+        return this.isDevelopment() 
+            ? 'http://localhost:3000/api'
+            : 'https://api.lordetempus.com';
     }
 }
+
+// Instância única da configuração segura
+const secureConfig = new SecureConfig();
 
 // Configurações públicas (podem ficar expostas)
 export const PUBLIC_CONFIG = {
@@ -128,13 +114,14 @@ export const PUBLIC_CONFIG = {
     }
 };
 
-// Instância singleton da configuração segura
-const secureConfig = new SecureConfig();
-
-// Exportar apenas métodos seguros
-export const isAdminEmail = (email) => secureConfig.isAdminEmail(email);
+// Exportações principais
 export const getFirebaseConfig = () => secureConfig.getFirebaseConfig();
+export const isAdminEmail = (email) => secureConfig.isAdminEmail(email);
 export const isSpecialEmail = (email) => secureConfig.isSpecialEmail(email);
-export const getAccessStats = () => secureConfig.getAccessStats();
+export const getPaymentConfig = () => secureConfig.getPaymentConfig();
+export const getEmailConfig = () => secureConfig.getEmailConfig();
+export const getAnalyticsConfig = () => secureConfig.getAnalyticsConfig();
+export const isDevelopment = () => secureConfig.isDevelopment();
+export const getApiBaseUrl = () => secureConfig.getApiBaseUrl();
 
 console.log("🔒 Configuração segura carregada - Versão " + PUBLIC_CONFIG.version); 

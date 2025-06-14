@@ -154,10 +154,7 @@ async function inicializarFirebase() {
         const firebaseConfig = configModule.getFirebaseConfig();
         isAdminEmail = configModule.isAdminEmail;
         
-        // Validar configuração
-        if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'undefined') {
-            throw new Error('API Key do Firebase não configurada ou inválida');
-        }
+        // Configuração do Firebase já está fixa no código
         
         console.log('🔥 Inicializando aplicação Firebase no perfil...');
         

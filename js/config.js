@@ -1,65 +1,44 @@
 // ==================== CONFIGURAÇÃO LORDE TEMPUS ==================== //
-// IMPORTANTE: Este arquivo contém configurações sensíveis
-// Em produção, essas informações devem vir de variáveis de ambiente
+// IMPORTANTE: Este arquivo contém configurações do Firebase
+// A chave de API do Firebase pode ser exposta no frontend pois não é secreta
 
 // Configuração Firebase
 export const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    apiKey: "AIzaSyA5TCpAxv9MAtozIDSnP1MnL21MWX9si8c",
     authDomain: "lordetempus-3be20.firebaseapp.com",
     projectId: "lordetempus-3be20",
-    storageBucket: "lordetempus-3be20.firebasestorage.app",
+    storageBucket: "lordetempus-3be20.appspot.com",
     messagingSenderId: "759824598929",
-    appId: "1:759824598929:web:995369b4c76dab2d777c30",
-    measurementId: "G-R710NDR8Q9"
+    appId: "1:759824598929:web:995369b4c7cdab2d777c30",
+    measurementId: "G-R710NDR809"
 };
 
-// Emails de administradores (remover daqui e usar variáveis de ambiente)
-export const ADMIN_CONFIG = {
-    emails: process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : [
-        "admin1@empresa.com", 
-        "admin2@empresa.com", 
-        "admin3@empresa.com"
-    ]
+// Configurações de planos
+export const PLANOS_CONFIG = {
+    gratis: { nome: 'Gratuito', preco: 0, cor: '#6b7280' },
+    minuta: { nome: 'Minuta', preco: 29.99, cor: '#3b82f6' },
+    minutos: { nome: 'Minutos', preco: 49.99, cor: '#8b5cf6' },
+    relogio: { nome: 'Relógio', preco: 79.99, cor: '#10b981', popular: true },
+    lorde: { nome: 'Lorde', preco: 119.99, cor: '#f59e0b' },
+    familiareal: { nome: 'Família Real', preco: 399.99, cor: '#ec4899' },
+    pracadotempo: { nome: 'Praça do Tempo', preco: 599.99, cor: '#ec4899' },
+    atemporal: { nome: 'Atemporal', preco: 999.99, cor: '#6366f1' },
+    cronomante: { nome: 'Cronomante', preco: 1999.99, cor: '#8b5cf6' },
+    administrador: { nome: 'Administrador', preco: 0, cor: '#ef4444' }
 };
 
-// Email especial (remover daqui e usar variável de ambiente)
-export const SPECIAL_CONFIG = {
-    specialEmail: process.env.SPECIAL_EMAIL || "special@empresa.com"
+// URLs importantes
+export const URLS = {
+    discord: "https://discord.gg/BHgQ2XZ89Y",
+    youtube: "https://youtube.com/@lordetempus",
+    tiktok: "https://tiktok.com/@lordetempus",
+    twitter: "https://twitter.com/lordetempus",
+    suporte: "mailto:contato@lordetempus.com"
 };
-
-// Função para verificar se o usuário é administrador
-export function isAdminEmail(email) {
-    if (!email) return false;
-    const normalizedEmail = email.toLowerCase().trim();
-    return ADMIN_CONFIG.emails.some(adminEmail => 
-        adminEmail.toLowerCase().trim() === normalizedEmail
-    );
-}
 
 // Função para obter configuração do Firebase
 export function getFirebaseConfig() {
-    // Em produção, verificar se todas as configurações necessárias estão presentes
-    if (firebaseConfig.apiKey === "YOUR_FIREBASE_API_KEY_HERE") {
-        console.warn("⚠️ Configuração do Firebase não definida corretamente. Verifique as variáveis de ambiente.");
-    }
     return firebaseConfig;
 }
-
-// ❌ FUNÇÃO REMOVIDA POR SEGURANÇA: getAdminEmails
-// Esta função foi removida para evitar exposição dos emails de admin
-// Use isAdminEmail(email) para verificar se um email específico é admin
-
-// Função para obter email especial
-export function getSpecialEmail() {
-    return SPECIAL_CONFIG.specialEmail;
-}
-
-// Configurações públicas (podem ficar expostas)
-export const PUBLIC_CONFIG = {
-    projectName: "Lorde Tempus",
-    supportEmail: "contato@lordetempus.com",
-    discordInvite: "https://discord.gg/BHgQ2XZ89Y",
-    version: "2.0.0"
-};
 
 console.log("🔧 Sistema de configuração carregado"); 

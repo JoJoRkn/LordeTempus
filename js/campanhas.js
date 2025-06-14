@@ -172,10 +172,7 @@ async function inicializarFirebase() {
         const { getFirebaseConfig, isAdminEmail, isSpecialEmail } = await import('./config-secure.js');
         const firebaseConfig = getFirebaseConfig();
         
-        // Validar configuração antes de inicializar
-        if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'undefined') {
-            throw new Error('API Key do Firebase não configurada ou inválida');
-        }
+        // Configuração do Firebase já está fixa no código
         
         console.log('🔧 Inicializando aplicação Firebase...');
         // Inicialização Firebase
@@ -233,10 +230,8 @@ async function inicializarFirebase() {
         
         if (error.message.includes('API Key')) {
             mensagemUsuario += 'Configuração de API inválida. ';
-            console.error('🔑 SOLUÇÃO: Verifique se o arquivo .env existe e contém VITE_FIREBASE_API_KEY');
         } else if (error.code === 'auth/invalid-api-key') {
             mensagemUsuario += 'Chave de API do Firebase inválida. ';
-            console.error('🔑 SOLUÇÃO: Verifique a API key no arquivo .env');
         } else if (error.message.includes('network')) {
             mensagemUsuario += 'Problemas de rede. ';
         }

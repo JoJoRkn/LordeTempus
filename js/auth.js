@@ -3,16 +3,32 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-// Importar configuração segura
-import { getFirebaseConfig, isAdminEmail } from './config-secure.js';
+// Configuração Firebase fixa
+const firebaseConfig = {
+    apiKey: "AIzaSyA5TCpAxv9MAtozIDSnP1MnL21MWX9si8c",
+    authDomain: "lordetempus-3be20.firebaseapp.com",
+    projectId: "lordetempus-3be20",
+    storageBucket: "lordetempus-3be20.appspot.com",
+    messagingSenderId: "759824598929",
+    appId: "1:759824598929:web:995369b4c7cdab2d777c30",
+    measurementId: "G-R710NDR809"
+};
 
-const firebaseConfig = getFirebaseConfig();
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Emails de administradores removidos por segurança
-// Use isAdminEmail(email) para verificar se é admin
+// Verificação de emails administrativos
+function isAdminEmail(email) {
+    if (!email) return false;
+    const adminEmails = [
+        "raiokan3223br@gmail.com",
+        "alef.midrei@gmail.com", 
+        "guigaxpxp@gmail.com",
+        "suporte@lordetempus.com"
+    ];
+    return adminEmails.includes(email.toLowerCase());
+}
 
 // Estado do usuário
 let currentUser = null;
