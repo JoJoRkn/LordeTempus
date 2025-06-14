@@ -392,28 +392,65 @@ async function signOutUser() {
  */
 async function verificarSeEAdmin() {
     if (!auth.currentUser) {
+        console.log('🔍 Verificação admin: Usuário não logado');
         isAdmin = false;
         return false;
     }
 
+    console.log('🔍 Verificando se usuário é admin:', auth.currentUser.email);
+
     try {
-        // Tentar ler uma coleção que só admins podem acessar (logs)
-        const testRef = doc(db, 'logs', 'admin-test');
+        // Método 1: Tentar ler uma coleção que só admins podem acessar (analytics)
+        const testRef = doc(db, 'analytics', 'admin-test');
         await getDoc(testRef);
         
-        // Se chegou até aqui sem erro, é admin
+        console.log('✅ Verificação admin: Acesso a analytics permitido - É ADMIN');
         isAdmin = true;
         return true;
     } catch (error) {
-        // Se deu erro de permissão, não é admin
-        if (error.code === 'permission-denied') {
-            isAdmin = false;
-            return false;
-        }
+        console.log('❌ Verificação admin (analytics):', error.code, error.message);
         
-        // Para outros erros, assumir que não é admin por segurança
-        isAdmin = false;
-        return false;
+        // Método 2: Tentar ler logs
+        try {
+            const logsRef = doc(db, 'logs', 'admin-test');
+            await getDoc(logsRef);
+            
+            console.log('✅ Verificação admin: Acesso a logs permitido - É ADMIN');
+            isAdmin = true;
+            return true;
+        } catch (error2) {
+            console.log('❌ Verificação admin (logs):', error2.code, error2.message);
+            
+            // Método 3: Tentar criar um documento de teste em settings
+            try {
+                const settingsRef = doc(db, 'settings', 'admin-test-write');
+                await setDoc(settingsRef, { 
+                    teste: true, 
+                    timestamp: new Date(),
+                    testadoPor: auth.currentUser.email 
+                }, { merge: true });
+                
+                console.log('✅ Verificação admin: Escrita em settings permitida - É ADMIN');
+                isAdmin = true;
+                return true;
+            } catch (error3) {
+                console.log('❌ Verificação admin (settings write):', error3.code, error3.message);
+                
+                // Se todos os métodos falharam com permission-denied, não é admin
+                if (error.code === 'permission-denied' || 
+                    error2.code === 'permission-denied' || 
+                    error3.code === 'permission-denied') {
+                    console.log('🚫 Verificação admin: Usuário NÃO é admin (permission-denied)');
+                    isAdmin = false;
+                    return false;
+                }
+                
+                // Para outros erros, assumir que não é admin por segurança
+                console.log('⚠️ Verificação admin: Erro desconhecido, assumindo NÃO admin por segurança');
+                isAdmin = false;
+                return false;
+            }
+        }
     }
 }
 

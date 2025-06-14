@@ -1606,15 +1606,15 @@ async function verificarPermissoesUsuario(user) {
         userIsAdmin = await verificarSeEAdminLocal();
         console.log('🔍 Resultado da verificação admin em campanhas:', userIsAdmin);
         
-        userPlano = userData.plano || 'gratis';
-        const planoInfo = PLANOS_SISTEMA[userPlano];
-        userHasPlano = planoInfo?.permiteRequisitar || false;
+                userPlano = userData.plano || 'gratis';
+                const planoInfo = PLANOS_SISTEMA[userPlano];
+                userHasPlano = planoInfo?.permiteRequisitar || false;
         
         // Se é admin, garantir que tem todas as permissões
         if (userIsAdmin) {
             userHasPlano = true;
             if (userData.plano !== 'administrador') {
-                userPlano = 'administrador';
+            userPlano = 'administrador';
             }
         }
         

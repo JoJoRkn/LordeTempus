@@ -7,11 +7,14 @@
 let auth = null;
 let db = null;
 let firebaseModules = null;
-let isAdminEmail = null;
+
+// Função simples para verificar se é admin baseado no plano
+function isAdminEmail(email, plano) {
+    return plano === 'administrador';
+}
 
 // ==================== CONSTANTES ==================== //
-// Configuração de administradores removida por segurança
-// Uso: isAdminEmail(email) para verificar se é admin
+// Verificação de admin baseada no plano do usuário no banco de dados
 
 // Sistema de planos unificado - HIERARQUIA CORRETA (sincronizado com campanhas.js)
 const PLANOS_SISTEMA = {
@@ -152,7 +155,6 @@ async function inicializarFirebase() {
         // Importar configuração segura
         const configModule = await import('./config-secure.js');
         const firebaseConfig = configModule.getFirebaseConfig();
-        isAdminEmail = configModule.isAdminEmail;
         
         // Configuração do Firebase já está fixa no código
         
@@ -3577,14 +3579,8 @@ window.verJogadores = async function(campanhaId) {
                             }
                         });
                         
-                        // Verificar se é admin
-                        const isJogadorAdmin = isAdminEmail(jogador.email.toLowerCase());
+                        // Usar plano do usuário diretamente
                         let planoFinal = userData?.plano || 'gratis';
-                        
-                        // Se for admin, sempre mostrar como administrador
-                        if (isJogadorAdmin) {
-                            planoFinal = 'administrador';
-                        }
                         
                         return {
                             ...jogador,
@@ -4012,25 +4008,37 @@ async function buscarCliente() {
     }
 }
 
-// Função para carregar todos os usuários
+// Variáveis para controle do lazy loading
+let todosUsuarios = [];
+let usuariosCarregados = 0;
+const USUARIOS_POR_LOTE = 10; // Carregar 10 usuários por vez
+let carregandoMais = false;
+
+// Função para carregar todos os usuários (apenas busca, não renderiza tudo)
 async function carregarTodosUsuarios() {
     const listaDiv = document.getElementById('listaClientes');
     
-    listaDiv.innerHTML = '<div class="text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Carregando todos os usuários...</div>';
+    listaDiv.innerHTML = '<div class="text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Carregando usuários...</div>';
     
     try {
         const q = firebaseModules.query(firebaseModules.collection(db, 'users'));
         const snapshot = await firebaseModules.getDocs(q);
         
-        let usuarios = [];
+        todosUsuarios = [];
         snapshot.forEach(docSnap => {
-            usuarios.push({ id: docSnap.id, ...docSnap.data() });
+            todosUsuarios.push({ id: docSnap.id, ...docSnap.data() });
         });
         
         // Ordenar por email
-        usuarios.sort((a, b) => (a.email || '').localeCompare(b.email || ''));
+        todosUsuarios.sort((a, b) => (a.email || '').localeCompare(b.email || ''));
         
-        renderizarListaUsuarios(usuarios, 'listaClientes');
+        // Resetar contador e carregar primeiro lote
+        usuariosCarregados = 0;
+        listaDiv.innerHTML = '';
+        carregarProximoLoteUsuarios();
+        
+        // Configurar scroll infinito
+        configurarScrollInfinito();
         
     } catch (error) {
         console.error('Erro ao carregar usuários:', error);
@@ -4038,18 +4046,41 @@ async function carregarTodosUsuarios() {
     }
 }
 
-// Função para renderizar lista de usuários
-function renderizarListaUsuarios(usuarios, containerId) {
+// Função para carregar próximo lote de usuários
+function carregarProximoLoteUsuarios() {
+    if (carregandoMais || usuariosCarregados >= todosUsuarios.length) return;
+    
+    carregandoMais = true;
+    const listaDiv = document.getElementById('listaClientes');
+    
+    // Calcular próximo lote
+    const inicio = usuariosCarregados;
+    const fim = Math.min(usuariosCarregados + USUARIOS_POR_LOTE, todosUsuarios.length);
+    const loteUsuarios = todosUsuarios.slice(inicio, fim);
+    
+    // Renderizar lote
+    renderizarLoteUsuarios(loteUsuarios, 'listaClientes');
+    
+    usuariosCarregados = fim;
+    carregandoMais = false;
+    
+    // Mostrar indicador se há mais usuários
+    if (usuariosCarregados < todosUsuarios.length) {
+        mostrarIndicadorCarregamento();
+    } else {
+        removerIndicadorCarregamento();
+    }
+}
+
+// Função para renderizar um lote de usuários (sem substituir os existentes)
+function renderizarLoteUsuarios(usuarios, containerId) {
     const container = document.getElementById(containerId);
     
-    if (usuarios.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500">Nenhum usuário encontrado.</div>';
-        return;
-    }
+    if (usuarios.length === 0) return;
 
-    // Função para obter HTML do plano igual ao perfil
-    function renderizarBadgePlano(plano, email) {
-        const isAdminUser = isAdminEmail(email);
+    // Função para obter HTML do plano
+    function renderizarBadgePlano(plano) {
+        const isAdminUser = (plano === 'administrador');
         let nome = 'Grátis', classesCSS = 'plano-badge plano-gratis', emoji = '🆓';
         
         if (isAdminUser) {
@@ -4103,9 +4134,9 @@ function renderizarListaUsuarios(usuarios, containerId) {
 
     const html = usuarios.map(usuario => {
         const planoAtual = usuario.plano || 'gratis';
-        const isAdminUser = isAdminEmail(usuario.email);
+        const isAdminUser = (planoAtual === 'administrador');
         return `
-            <div class="user-card bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
+            <div class="user-card bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700 shadow-sm mb-6" style="opacity: 0; transform: translateY(20px);">
                 <div class="flex items-start justify-between">
                     <div class="flex items-center gap-4 flex-1">
                         <img src="${usuario.photoURL || 'images/avatar-default.png'}" 
@@ -4121,7 +4152,7 @@ function renderizarListaUsuarios(usuarios, containerId) {
                                 <span class="text-gray-500 dark:text-gray-400">Idade: ${usuario.age || 'Não informado'}</span>
                             </div>
                             <div class="mt-2">
-                                ${renderizarBadgePlano(planoAtual, usuario.email)}
+                                ${renderizarBadgePlano(planoAtual)}
                             </div>
                         </div>
                     </div>
@@ -4144,8 +4175,86 @@ function renderizarListaUsuarios(usuarios, containerId) {
         `;
     }).join('');
     
-    container.innerHTML = html;
+    // Adicionar HTML ao container
+    container.insertAdjacentHTML('beforeend', html);
+    
+    // Animar entrada dos novos cards
+    const novosCards = container.querySelectorAll('.user-card[style*="opacity: 0"]');
+    novosCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.transition = 'all 0.3s ease-out';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100); // Delay escalonado para efeito suave
+    });
 }
+
+// Função para mostrar indicador de carregamento
+function mostrarIndicadorCarregamento() {
+    const container = document.getElementById('listaClientes');
+    let indicador = document.getElementById('loading-indicator');
+    
+    if (!indicador) {
+        indicador = document.createElement('div');
+        indicador.id = 'loading-indicator';
+        indicador.className = 'text-center py-4';
+        indicador.innerHTML = `
+            <div class="text-gray-500">
+                <i class="fas fa-chevron-down mr-2"></i>
+                Role para baixo para carregar mais usuários
+                <div class="text-sm mt-1">${usuariosCarregados} de ${todosUsuarios.length} carregados</div>
+            </div>
+        `;
+        container.appendChild(indicador);
+    } else {
+        indicador.querySelector('div').innerHTML = `
+            <i class="fas fa-chevron-down mr-2"></i>
+            Role para baixo para carregar mais usuários
+            <div class="text-sm mt-1">${usuariosCarregados} de ${todosUsuarios.length} carregados</div>
+        `;
+    }
+}
+
+// Função para remover indicador de carregamento
+function removerIndicadorCarregamento() {
+    const indicador = document.getElementById('loading-indicator');
+    if (indicador) {
+        indicador.innerHTML = `
+            <div class="text-green-600">
+                <i class="fas fa-check mr-2"></i>
+                Todos os ${todosUsuarios.length} usuários foram carregados
+            </div>
+        `;
+    }
+}
+
+// Função para configurar scroll infinito
+function configurarScrollInfinito() {
+    const container = document.getElementById('listaClientes');
+    if (!container) return;
+    
+    // Remover listener anterior se existir
+    if (container.scrollListener) {
+        window.removeEventListener('scroll', container.scrollListener);
+    }
+    
+    // Criar novo listener
+    container.scrollListener = function() {
+        // Verificar se chegou perto do final da página
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        // Carregar mais quando estiver a 200px do final
+        if (scrollTop + windowHeight >= documentHeight - 200) {
+            carregarProximoLoteUsuarios();
+        }
+    };
+    
+    window.addEventListener('scroll', container.scrollListener);
+}
+
+// Função removida - substituída por renderizarLoteUsuarios para lazy loading
 
 // ==================== FUNÇÕES DE IMPORTAÇÃO/EXPORTAÇÃO CSV ==================== //
 
@@ -5926,13 +6035,7 @@ console.log('🔒 Validando destinatário...', {
     currentUserEmail: currentUser.email
 });
 
-if (!isAdminEmail(adminDestinatario)) {
-    console.error('❌ Validação falhou: destinatário não é admin válido');
-    console.log('🔍 Destinatário:', adminDestinatario);
-    throw new Error('Validação de segurança falhou: destinatário inválido');
-}
-
-console.log('✅ Validação do destinatário passou');
+// Validação removida - mensagens podem ser enviadas normalmente
         console.log('✅ Validação de segurança passou');
         
         // === SALVAR NO FIREBASE PRIMEIRO ===

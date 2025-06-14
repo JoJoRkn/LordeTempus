@@ -221,6 +221,18 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // ADMIN_VERIFICATION: Coleção específica para verificar admins (APENAS ADMINS REAIS)
+    // Esta coleção é usada APENAS para testar permissões de admin
+    match /admin_verification/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // ADMIN_TEST: Coleção de teste ultra-restrita (APENAS para verificação de admin)
+    match /admin_test/{document=**} {
+      allow read: if isAdmin();
+      allow write: if false; // Nunca permitir escrita para manter vazia
+    }
+
     // LOGS: Sistema de logs para auditoria (apenas admin)
     match /logs/{logId} {
       allow read, write: if isAdmin();
