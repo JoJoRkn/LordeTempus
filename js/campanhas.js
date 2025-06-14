@@ -1601,12 +1601,10 @@ async function verificarPermissoesUsuario(user) {
         });
         
         // Verificação de permissões será feita através das regras do Firestore
-        // Verificar se é admin através da função do auth.js
-        if (window.authUtils && window.authUtils.verificarSeEAdmin) {
-            userIsAdmin = await window.authUtils.verificarSeEAdmin();
-        } else {
-            userIsAdmin = false;
-        }
+        // Verificar se é admin através da função local
+        console.log('🔍 Iniciando verificação de admin em campanhas...');
+        userIsAdmin = await verificarSeEAdminLocal();
+        console.log('🔍 Resultado da verificação admin em campanhas:', userIsAdmin);
         
         userPlano = userData.plano || 'gratis';
         const planoInfo = PLANOS_SISTEMA[userPlano];
@@ -1630,9 +1628,16 @@ async function verificarPermissoesUsuario(user) {
         });
         
         // Forçar renderização das campanhas com novos dados
+        console.log('🔄 Forçando re-renderização das campanhas com permissões atualizadas');
         setTimeout(() => {
             renderizarCampanhas();
-        }, 500);
+        }, 100);
+        
+        // Segunda renderização para garantir que os botões de admin apareçam
+        setTimeout(() => {
+            console.log('🔄 Segunda renderização para garantir botões de admin');
+            renderizarCampanhas();
+        }, 1000);
         
     } catch (error) {
         console.error('❌ Erro ao verificar permissões do usuário:', error);
@@ -1906,6 +1911,90 @@ function showNotification(message, type = 'info') {
         console.log(`[${type.toUpperCase()}] ${message}`);
     } finally {
         processandoNotificacao = false;
+    }
+}
+
+// Função global para forçar verificação de admin
+window.forcarVerificacaoAdmin = async function() {
+    console.log('🔄 Forçando verificação de admin...');
+    const user = auth?.currentUser;
+    if (user) {
+        await verificarPermissoesUsuario(user);
+    }
+};
+
+// Função global para testar verificação de admin diretamente
+window.testarAdminLocal = async function() {
+    console.log('🧪 Testando verificação de admin local...');
+    const resultado = await verificarSeEAdminLocal();
+    console.log('🧪 Resultado do teste:', resultado);
+    return resultado;
+};
+
+// ==================== VERIFICAÇÃO DE ADMIN LOCAL ==================== //
+
+/**
+ * Verifica se o usuário atual é admin através das regras do Firestore
+ * Versão local para o módulo de campanhas
+ */
+async function verificarSeEAdminLocal() {
+    if (!auth?.currentUser) {
+        console.log('🔍 Verificação admin local: Usuário não logado');
+        return false;
+    }
+
+    console.log('🔍 Verificando se usuário é admin (local):', auth.currentUser.email);
+
+    try {
+        // Método 1: Tentar ler uma coleção que só admins podem acessar (analytics)
+        const { doc, getDoc, setDoc } = window.firestoreModules;
+        const testRef = doc(db, 'analytics', 'admin-test');
+        await getDoc(testRef);
+        
+        console.log('✅ Verificação admin local: Acesso a analytics permitido - É ADMIN');
+        return true;
+    } catch (error) {
+        console.log('❌ Verificação admin local (analytics):', error.code, error.message);
+        
+        // Método 2: Tentar ler logs
+        try {
+            const { doc, getDoc } = window.firestoreModules;
+            const logsRef = doc(db, 'logs', 'admin-test');
+            await getDoc(logsRef);
+            
+            console.log('✅ Verificação admin local: Acesso a logs permitido - É ADMIN');
+            return true;
+        } catch (error2) {
+            console.log('❌ Verificação admin local (logs):', error2.code, error2.message);
+            
+            // Método 3: Tentar criar um documento de teste em settings
+            try {
+                const { doc, setDoc } = window.firestoreModules;
+                const settingsRef = doc(db, 'settings', 'admin-test-write');
+                await setDoc(settingsRef, { 
+                    teste: true, 
+                    timestamp: new Date(),
+                    testadoPor: auth.currentUser.email 
+                }, { merge: true });
+                
+                console.log('✅ Verificação admin local: Escrita em settings permitida - É ADMIN');
+                return true;
+            } catch (error3) {
+                console.log('❌ Verificação admin local (settings write):', error3.code, error3.message);
+                
+                // Se todos os métodos falharam com permission-denied, não é admin
+                if (error.code === 'permission-denied' || 
+                    error2.code === 'permission-denied' || 
+                    error3.code === 'permission-denied') {
+                    console.log('🚫 Verificação admin local: Usuário NÃO é admin (permission-denied)');
+                    return false;
+                }
+                
+                // Para outros erros, assumir que não é admin por segurança
+                console.log('⚠️ Verificação admin local: Erro desconhecido, assumindo NÃO admin por segurança');
+                return false;
+            }
+        }
     }
 }
 
