@@ -6,7 +6,7 @@ const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
 
 
 export default defineConfig({
-  base: '/SiteLordeTempus/', // Base URL para o GitHub Pages
+  base: '/LordeTempus/', // Base URL para o GitHub Pages
   
   root: '.', // ou o diretório onde está seu index.html
   

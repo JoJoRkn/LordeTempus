@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
+const firebaseApiKey = process.env.VITE_FIREBASE_API_KEY;
+
+
 export default defineConfig({
   base: '/LordeTempus/', // Base URL para o GitHub Pages
   
