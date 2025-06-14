@@ -766,7 +766,7 @@
                     const text = div.textContent || '';
                     if (text.includes('REQUISITAR VAGA') || 
                         text.includes('GERENCIAR JOGADORES') || 
-                        text.includes('admin@') ||
+                        text.includes('admin@empresa.com') ||
                         (text.length > 0 && !div.querySelector('script'))) {
                         console.log('Removendo div órfã:', div);
                         div.remove();

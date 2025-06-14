@@ -1,7 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Lista de emails de administradores
+    // ==================== SEGURANÇA DE ADMINISTRADORES ==================== //
+    // IMPORTANTE: A lista de emails de administradores está APENAS aqui no backend
+    // NUNCA exponha emails de admin no frontend por questões de privacidade e segurança
+    // Esta é a ÚNICA fonte de verdade para verificação de permissões administrativas
+    
+    // Lista de emails de administradores (BACKEND ONLY)
     function isAdmin() {
       return request.auth != null && request.auth.token.email != null && 
              request.auth.token.email.lower() in [
@@ -54,6 +59,8 @@ service cloud.firestore {
                           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plano : "gratis") >= 
               getPlanLevel(campaignPlan));
     }
+
+    // ==================== REGRAS DE ACESSO ==================== //
 
     // USERS: Perfil do usuário
     match /users/{userId} {

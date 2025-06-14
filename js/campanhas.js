@@ -1600,69 +1600,23 @@ async function verificarPermissoesUsuario(user) {
             dadosCompletos: userData
         });
         
-        // Obter funções seguras do escopo global
-        const { isAdminEmail, isSpecialEmail } = window.secureConfigFunctions || {};
-        
-        // Verificar se as funções estão disponíveis
-        if (!isAdminEmail || !isSpecialEmail) {
-            console.warn('⚠️ Funções seguras não disponíveis, usando verificação local');
-            // Verificação local como fallback
-            const adminEmails = ["raiokan3223br@gmail.com", "alef.midrei@gmail.com", "guigaxpxp@gmail.com", "suporte@lordetempus.com"];
-            const specialEmail = "baneagorarito@gmail.com";
-            
-            const userEmail = user.email.toLowerCase();
-            
-            // Verificar admin com lista local
-            if (adminEmails.includes(userEmail)) {
-                userIsAdmin = true;
-                userHasPlano = true;
-                userPlano = 'administrador';
-                console.log('👑 Admin verificado com lista local');
-            }
-            // Verificar email especial
-            else if (userEmail === specialEmail) {
-                if (!userData.plano || userData.plano !== 'lorde') {
-                    console.log('👑 Configurando plano especial Lorde (local)');
-                    await setDoc(userRef, { plano: 'lorde' }, { merge: true });
-                    userData.plano = 'lorde';
-                }
-                userPlano = 'lorde';
-                userHasPlano = true;
-            } else {
-                userPlano = userData.plano || 'gratis';
-                const planoInfo = PLANOS_SISTEMA[userPlano];
-                userHasPlano = planoInfo?.permiteRequisitar || false;
-            }
+        // Verificação de permissões será feita através das regras do Firestore
+        // Verificar se é admin através da função do auth.js
+        if (window.authUtils && window.authUtils.verificarSeEAdmin) {
+            userIsAdmin = await window.authUtils.verificarSeEAdmin();
         } else {
-            // Verificar se é admin usando função segura
-            if (isAdminEmail && isAdminEmail(user.email)) {
-            userIsAdmin = true;
-            userHasPlano = true;
-            userPlano = 'administrador';
-            // Usuário tem permissões de administrador
+            userIsAdmin = false;
         }
-        // Verificar plano especial usando função segura
-        else if (isSpecialEmail && isSpecialEmail(user.email)) {
-            if (!userData.plano || userData.plano !== 'lorde') {
-                console.log('👑 Configurando plano especial Lorde para usuário especial');
-                await setDoc(userRef, { plano: 'lorde' }, { merge: true });
-                userData.plano = 'lorde';
-            }
-            userPlano = 'lorde';
+        
+        userPlano = userData.plano || 'gratis';
+        const planoInfo = PLANOS_SISTEMA[userPlano];
+        userHasPlano = planoInfo?.permiteRequisitar || false;
+        
+        // Se é admin, garantir que tem todas as permissões
+        if (userIsAdmin) {
             userHasPlano = true;
-            console.log('👑 Plano especial: Lorde configurado');
-        }
-            else {
-                userPlano = userData.plano || 'gratis';
-                const planoInfo = PLANOS_SISTEMA[userPlano];
-                userHasPlano = planoInfo?.permiteRequisitar || false;
-                
-                console.log('📋 Plano do usuário:', {
-                    plano: userPlano,
-                    planoInfo,
-                    permiteRequisitar: planoInfo?.permiteRequisitar,
-                    userHasPlano
-                });
+            if (userData.plano !== 'administrador') {
+                userPlano = 'administrador';
             }
         }
         

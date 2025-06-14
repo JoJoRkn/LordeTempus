@@ -31,24 +31,6 @@ class SecureConfig {
         };
     }
 
-    // Verificação de emails administrativos
-    isAdminEmail(email) {
-        if (!email) return false;
-        const adminEmails = [
-            "raiokan3223br@gmail.com",
-            "alef.midrei@gmail.com", 
-            "guigaxpxp@gmail.com",
-            "suporte@lordetempus.com"
-        ];
-        return adminEmails.includes(email.toLowerCase());
-    }
-
-    // Verificação de email especial
-    isSpecialEmail(email) {
-        if (!email) return false;
-        return email.toLowerCase() === "baneagorarito@gmail.com";
-    }
-
     // Método para obter configurações de pagamento (placeholder)
     getPaymentConfig() {
         return {
@@ -116,8 +98,6 @@ export const PUBLIC_CONFIG = {
 
 // Exportações principais
 export const getFirebaseConfig = () => secureConfig.getFirebaseConfig();
-export const isAdminEmail = (email) => secureConfig.isAdminEmail(email);
-export const isSpecialEmail = (email) => secureConfig.isSpecialEmail(email);
 export const getPaymentConfig = () => secureConfig.getPaymentConfig();
 export const getEmailConfig = () => secureConfig.getEmailConfig();
 export const getAnalyticsConfig = () => secureConfig.getAnalyticsConfig();

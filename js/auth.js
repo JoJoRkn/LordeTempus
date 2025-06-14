@@ -18,18 +18,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Verificação de emails administrativos
-function isAdminEmail(email) {
-    if (!email) return false;
-    const adminEmails = [
-        "raiokan3223br@gmail.com",
-        "alef.midrei@gmail.com", 
-        "guigaxpxp@gmail.com",
-        "suporte@lordetempus.com"
-    ];
-    return adminEmails.includes(email.toLowerCase());
-}
-
 // Estado do usuário
 let currentUser = null;
 let isAdmin = false;
@@ -308,6 +296,14 @@ onAuthStateChanged(auth, async (user) => {
             // Sistema anti-duplicação implementado
             const resultado = await criarOuAtualizarUsuario(user);
             
+            // Verificar se é admin através do Firestore
+            await verificarSeEAdmin();
+            
+            // Se for admin, configurar plano automaticamente
+            if (isAdmin) {
+                await configurarPlanoAdmin();
+            }
+            
             console.log('✅ Resultado do login:', resultado);
             
             // Mostrar notificação se houve mesclagem
@@ -353,8 +349,9 @@ onAuthStateChanged(auth, async (user) => {
         if (emailEl) emailEl.textContent = user.email || "";
         if (photoEl) photoEl.src = user.photoURL || "images/avatar-default.png";
 
+        // Painel de admin será controlado pelas regras do Firestore
         if (adminPanel) {
-            if (isAdminEmail(user.email)) {
+            if (isAdmin) {
                 adminPanel.style.display = "block";
             } else {
                 adminPanel.style.display = "none";
@@ -387,9 +384,73 @@ async function signOutUser() {
     }
 }
 
+// ==================== VERIFICAÇÃO DE ADMIN VIA FIRESTORE ==================== //
+
+/**
+ * Verifica se o usuário atual é admin através das regras do Firestore
+ * Tenta fazer uma operação que só admins podem fazer
+ */
+async function verificarSeEAdmin() {
+    if (!auth.currentUser) {
+        isAdmin = false;
+        return false;
+    }
+
+    try {
+        // Tentar ler uma coleção que só admins podem acessar (logs)
+        const testRef = doc(db, 'logs', 'admin-test');
+        await getDoc(testRef);
+        
+        // Se chegou até aqui sem erro, é admin
+        isAdmin = true;
+        return true;
+    } catch (error) {
+        // Se deu erro de permissão, não é admin
+        if (error.code === 'permission-denied') {
+            isAdmin = false;
+            return false;
+        }
+        
+        // Para outros erros, assumir que não é admin por segurança
+        isAdmin = false;
+        return false;
+    }
+}
+
+/**
+ * Atualiza o plano do usuário para 'administrador' se for admin
+ */
+async function configurarPlanoAdmin() {
+    if (!auth.currentUser || !isAdmin) return;
+
+    try {
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            
+            // Se é admin mas não tem plano de administrador, atualizar
+            if (userData.plano !== 'administrador') {
+                await setDoc(userRef, {
+                    plano: 'administrador',
+                    planoAlteradoEm: new Date(),
+                    planoAlteradoPor: 'sistema-admin-detection'
+                }, { merge: true });
+                
+                console.log('✅ Plano de administrador configurado automaticamente');
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao configurar plano admin:', error);
+    }
+}
+
 // Exportar funções úteis para outros módulos
 window.authUtils = {
     buscarUsuariosComMesmoEmail,
     mesclarContasUsuario,
-    criarOuAtualizarUsuario
+    criarOuAtualizarUsuario,
+    verificarSeEAdmin,
+    configurarPlanoAdmin
 }; 

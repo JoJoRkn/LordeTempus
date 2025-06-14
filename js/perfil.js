@@ -371,14 +371,12 @@ async function verificarPermissoes(user) {
     try {
         const emailUsuario = user.email.toLowerCase();
         
-        // Verificar se a função isAdminEmail está disponível
-        if (typeof isAdminEmail === 'function') {
-            isAdmin = isAdminEmail(emailUsuario);
+        // Verificação de admin será feita através das regras do Firestore
+        // Verificar se é admin através da função do auth.js
+        if (window.authUtils && window.authUtils.verificarSeEAdmin) {
+            isAdmin = await window.authUtils.verificarSeEAdmin();
         } else {
-            console.warn('⚠️ Função isAdminEmail não disponível, usando verificação local');
-            // Verificação local como fallback (temporário)
-            const adminEmails = ["raiokan3223br@gmail.com", "alef.midrei@gmail.com", "guigaxpxp@gmail.com"];
-            isAdmin = adminEmails.includes(emailUsuario);
+            isAdmin = false;
         }
         
         // Verificação de permissões realizada com segurança
@@ -392,6 +390,17 @@ async function verificarPermissoes(user) {
         // Para admins, usar o plano real salvo no banco
         userPlano = userData.plano || 'gratis';
         hasPlano = !!userPlano && userPlano !== 'gratis';
+        
+        // Se é admin, garantir que tem plano de administrador
+        if (isAdmin && userPlano !== 'administrador') {
+            userPlano = 'administrador';
+            hasPlano = true;
+            
+            // Atualizar no banco se necessário
+            if (window.authUtils && window.authUtils.configurarPlanoAdmin) {
+                await window.authUtils.configurarPlanoAdmin();
+            }
+        }
         
         // Chamar configurarAbas novamente para garantir que a aba Admin apareça
         configurarAbas();
@@ -5383,8 +5392,8 @@ window.sincronizarPlanoComCampanhas = sincronizarPlanoComCampanhas;
 
 // === CONSTANTES DO SISTEMA DE MENSAGENS ===
 const MENSAGENS_CONFIG = {
-    // Lista dos administradores removida por segurança
-    // Função _getAdminEmailsInternal removida por segurança
+    // Verificação de admin removida do frontend por segurança
+    // Admin será verificado através das regras do Firestore
     
     // Configurações de limites
     MAX_CARACTERES: 1000,
