@@ -3993,13 +3993,26 @@ async function buscarCliente() {
         
         if (usuariosEncontrados.length === 0) {
             resultadoDiv.innerHTML = '<div class="text-yellow-600">Nenhum usuário encontrado com esse termo.</div>';
+            // Limpar lista de clientes quando não há resultados
+            document.getElementById('listaClientes').innerHTML = '';
         } else {
             resultadoDiv.innerHTML = `
                 <div class="text-green-600 mb-4">
                     <i class="fas fa-check mr-2"></i>Encontrados ${usuariosEncontrados.length} usuário(s)
                 </div>
             `;
-            renderizarListaUsuarios(usuariosEncontrados, 'listaClientes');
+            // Configurar sistema de carregamento por lotes para resultados da busca
+            todosUsuarios = usuariosEncontrados.sort((a, b) => (a.email || '').localeCompare(b.email || ''));
+            usuariosCarregados = 0;
+            
+            // Limpar lista de clientes antes de mostrar resultados da busca
+            document.getElementById('listaClientes').innerHTML = '';
+            
+            // Carregar primeiro lote dos resultados da busca
+            carregarProximoLoteUsuarios();
+            
+            // Configurar scroll infinito para os resultados da busca
+            configurarScrollInfinito();
         }
         
     } catch (error) {
