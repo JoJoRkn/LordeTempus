@@ -3124,8 +3124,7 @@ async function criarCampanha(e) {
     };
     
     try {
-        const campanhaRef = doc(firebaseModules.collection(db, 'campanhas'));
-        await firebaseModules.setDoc(campanhaRef, campanha);
+        await firebaseModules.addDoc(firebaseModules.collection(db, 'campanhas'), campanha);
         
         msgDiv.innerHTML = '<div class="text-green-500">Campanha criada com sucesso!</div>';
         
