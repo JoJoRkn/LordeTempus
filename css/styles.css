@@ -1768,7 +1768,7 @@ body {
 }
 
 .dark .campanha-nome {
-    color: var(--text-light);
+    color: var(--primary);
 }
 
 .campanha-badge {
